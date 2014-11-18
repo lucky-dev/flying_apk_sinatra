@@ -13,5 +13,7 @@ class User < Sequel::Model
     validates_max_length 50, :name
     validates_format VALID_EMAIL_REGEX, :email
     validates_min_length 6, :password
+    validates_unique :email
   end
+  one_to_many :permission_apps
 end

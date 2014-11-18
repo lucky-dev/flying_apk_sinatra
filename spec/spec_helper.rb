@@ -1,5 +1,7 @@
 require 'rack/test'
+require 'rake'
 require 'find'
+require 'sequel'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -15,6 +17,9 @@ Find.find("#{APP_DIR}/app") do |path|
   require path if path =~ /\/(models|routes)\/.*\.rb$/
 end
 ###
+
+# Init database
+DB = Sequel.sqlite(FlyingApk::DATABASE_PATH)
 
 module RSpecMixin
   include Rack::Test::Methods
