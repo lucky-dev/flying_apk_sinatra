@@ -9,6 +9,7 @@ describe User do
     expect(@user).to respond_to(:name)
     expect(@user).to respond_to(:email)
     expect(@user).to respond_to(:password)
+    expect(@user).to respond_to(:encoded_password)
     expect(@user).to respond_to(:access_token)
     expect(@user).to respond_to(:permission_apps)
   end
@@ -92,6 +93,12 @@ describe User do
       @user.save
       
       expect(@user.permission_apps.size).to eq(0)
+    end
+    
+    it "when encoded password is valid" do
+      @user.save
+
+      expect(@user.encoded_password).to eq("a8b124cae2e9b214eb1c2109da4821f2")
     end
   end
 end

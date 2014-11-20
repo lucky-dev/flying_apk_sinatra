@@ -1,8 +1,9 @@
 class User < Sequel::Model
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(?:\.[a-z\d\-]+)*\.[a-z]+\z/i
-  
+
   def before_save
     self.email.downcase!
+    self.encoded_password = UserHelper.salt_password(self.password)
     super
   end
 
@@ -16,4 +17,13 @@ class User < Sequel::Model
     validates_unique :email
   end
   one_to_many :permission_apps
+  
+  # Virtual property
+  def password
+    @password
+  end
+
+  def password=(password)
+    @password = password
+  end
 end

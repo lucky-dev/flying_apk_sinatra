@@ -1,13 +1,37 @@
+require 'pry'
+
 module ApiV1
   API_VERSION = 1
 
   class ApiHandler
-    def self.register(email, password)
-      user = User.first(email: email)
-      if user
-        [409, { 'Content-Type' => 'application/json' }, "Not OK"]
+    def self.handle(method, http_accept, params)
+      if ApiHelper.get_api_version(http_accept) == 1
+        if method == :register
+          register(http_accept, params)
+        end
       else
-        [200, { 'Content-Type' => 'application/json' }, "OK"]
+        return ApiHelper.response(406) do
+          { api_version: API_VERSION, response: { errors: [ "Bad header" ] } }
+        end
+      end
+    end
+
+    def self.register(http_accept, params)
+      name = params[:name]
+      email = params[:email]
+      password = params[:password]
+      
+      user = User.new(name: name, email: email, password: password)
+      if user.valid?
+        return ApiHelper.response(200) do
+          user.access_token = UserHelper::generate_access_token(name, email)
+          user.save
+          { api_version: API_VERSION, response: { access_token: user.access_token } }
+        end
+      else
+        return ApiHelper.response(500) do
+          { api_version: API_VERSION, response: { errors: user.errors.full_messages.uniq } }
+        end
       end
     end
   end

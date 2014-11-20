@@ -12,4 +12,8 @@ module ApiHelper
 
     return 0
   end
+
+  def self.response(status)
+    [ status, { 'Content-Type' => 'application/json' }, yield.to_json ]
+  end
 end
