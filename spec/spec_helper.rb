@@ -16,7 +16,7 @@ module RSpecMixin
   include Rack::Test::Methods
 
   def app
-    Flying::App
+    FlyingApk::App
   end
 end
 

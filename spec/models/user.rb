@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-  before do
+  before do    
     @user = User.new(name: "Bob", email: "test@example.com", password: "1234567")
   end
 
@@ -51,7 +51,7 @@ describe User do
     it "when email address is already taken" do
       DB[:permission_apps].delete
       DB[:users].delete
-
+      
       user_with_same_email = @user.dup
       user_with_same_email.email = @user.email.upcase
       user_with_same_email.save
@@ -64,10 +64,8 @@ describe User do
     before do
       DB[:permission_apps].delete
       DB[:users].delete
-      DB[:builds].delete
-      DB[:android_apps].delete
     end
-
+    
     it "when all properties are valid" do
       expect(@user).to be_valid
     end

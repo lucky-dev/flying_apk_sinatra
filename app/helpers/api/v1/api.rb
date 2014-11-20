@@ -1,5 +1,3 @@
-require 'pry'
-
 module ApiV1
   API_VERSION = 1
 
@@ -11,7 +9,7 @@ module ApiV1
         end
       else
         return ApiHelper.response(406) do
-          { api_version: API_VERSION, response: { errors: [ "Bad header" ] } }
+          { api_version: API_VERSION, response: { errors: [ "bad header" ] } }
         end
       end
     end
@@ -24,7 +22,6 @@ module ApiV1
       user = User.new(name: name, email: email, password: password)
       if user.valid?
         return ApiHelper.response(200) do
-          user.access_token = UserHelper::generate_access_token(name, email)
           user.save
           { api_version: API_VERSION, response: { access_token: user.access_token } }
         end
