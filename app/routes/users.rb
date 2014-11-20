@@ -6,6 +6,7 @@ module FlyingApk
       end
 
       post '/login' do
+        status, header, body = ApiV1::ApiHandler.handle(:login, request.env['HTTP_ACCEPT'], params)
       end
     end
   end

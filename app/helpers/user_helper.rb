@@ -7,8 +7,8 @@ module UserHelper
     Digest::MD5.hexdigest("#{password}#{COOL_SALT}")
   end
   
-  def self.equal_passwords?(password1, password2)
-    Digest::MD5.hexdigest("#{password1}#{COOL_SALT}") == Digest::MD5.hexdigest("#{password2}#{COOL_SALT}")
+  def self.equal_passwords?(original_password, encoded_password)
+    Digest::MD5.hexdigest("#{original_password}#{COOL_SALT}") == encoded_password
   end
   
   def self.generate_access_token(user_name, user_email)

@@ -1,16 +1,14 @@
 require 'spec_helper'
-require 'pry'
 
 describe User do
-  before do    
-    @method = "/register"
+  before do
     @header = { "HTTP_ACCEPT" => "application/vnd.flyingapp; version=1" }
   end
 
   describe "is not created" do
 
     it "when header is empty" do
-      post @method
+      post "/register"
       
       expect(last_response.status).to eq(406)
   
@@ -20,7 +18,7 @@ describe User do
     end
 
     it "when name is not valid" do
-      post @method , { "email" => "test@example.com", "password" => "1234567" }, @header
+      post "/register" , { "email" => "test@example.com", "password" => "1234567" }, @header
 
       expect(last_response.status).to eq(500)
   
@@ -32,7 +30,7 @@ describe User do
     describe "when email" do
       
       it "is not present" do
-        post @method, { "name" => "test", "password" => "1234567" }, @header
+        post "/register", { "name" => "test", "password" => "1234567" }, @header
 
         expect(last_response.status).to eq(500)
   
@@ -57,7 +55,7 @@ describe User do
         user = User.new(name: "Bob", email: "test@example.com", password: "1234567")
         user.save
         
-        post @method , { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
+        post "/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
 
         expect(last_response.status).to eq(500)
 
@@ -71,7 +69,7 @@ describe User do
     describe "when password" do
       
       it "is not present" do
-        post @method, { "name" => "test", "email" => "test@example.com" }, @header
+        post "/register", { "name" => "test", "email" => "test@example.com" }, @header
 
         expect(last_response.status).to eq(500)
   
@@ -81,7 +79,8 @@ describe User do
       end
       
       it "is too short" do
-        post @method , { "name" => "test", "email" => "test_example.com", "password" => "123" }, @header
+        post "/register", { "name" => "test", "email" => "test_example.com", "password" => "123" }, @header
+        
         expect(last_response.status).to eq(500)
   
         json_response = JSON.parse(last_response.body)
@@ -100,7 +99,7 @@ describe User do
     end
 
     it "when all fields are valid" do      
-      post @method , { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
+      post "/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
 
       expect(last_response.status).to eq(200)
 
@@ -109,6 +108,77 @@ describe User do
       expect(json_response["response"]).to include("access_token")
     end
     
+  end
+  
+  describe "does not enter in the system" do
+    before do
+      DB[:permission_apps].delete
+      DB[:users].delete
+
+      user = User.new(name: "Bob", email: "test@example.com", password: "1234567")
+      user.save
+    end
+    
+    it "when email is wrong" do
+      post "/login", { "email" => "test123@example.com", "password" => "1234567" }, @header
+      
+      expect(last_response.status).to eq(500)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]["errors"]).to include("email is not found")
+    end
+    
+    it "when email is nil" do
+      post "/login", { "password" => "1234567" }, @header
+      
+      expect(last_response.status).to eq(500)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]["errors"]).to include("email is not found")
+    end
+    
+    it "when password does not match" do
+      post "/login", { "email" => "test@example.com", "password" => "12345678" }, @header
+      
+      expect(last_response.status).to eq(500)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]["errors"]).to include("password is wrong")
+    end
+    
+    it "when password is nil" do
+      post "/login", { "email" => "test@example.com"}, @header
+      
+      expect(last_response.status).to eq(500)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]["errors"]).to include("password is wrong")
+    end
+    
+  end
+  
+  describe "enters in the system" do    
+    before do
+      DB[:permission_apps].delete
+      DB[:users].delete
+
+      user = User.new(name: "Bob", email: "test@example.com", password: "1234567")
+      user.save
+    end
+    
+    it "when email and password are right" do      
+      post "/login", { "email" => "test@example.com", "password" => "1234567"}, @header
+      
+      expect(last_response.status).to eq(200)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]).to include("access_token")
+    end
   end
 
 end
