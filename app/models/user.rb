@@ -16,8 +16,8 @@ class User < Sequel::Model
     validates_format VALID_EMAIL_REGEX, :email
     validates_unique :email
     # It's a virtual property
-    validates_presence :password if @check_password
-    validates_min_length 6, :password if @check_password
+    validates_presence :password if @password_changed || new?
+    validates_min_length 6, :password if @password_changed || new?
   end
   one_to_many :permission_apps
   
@@ -27,7 +27,7 @@ class User < Sequel::Model
   end
 
   def password=(password)
-    @check_password = true
+    @password_changed = true
     @password = password
   end
 end

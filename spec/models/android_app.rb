@@ -33,6 +33,17 @@ describe AndroidApp do
       @android_app.description = "y" * 141
       expect(@android_app).not_to be_valid
     end
+    
+    it "when name is already taken" do
+      DB[:builds].delete
+      DB[:android_apps].delete
+
+      app_with_same_name = @android_app.dup
+      app_with_same_name.name = @android_app.name.upcase
+      app_with_same_name.save
+
+      expect(@android_app).not_to be_valid
+    end
   end
 
   describe "is valid" do

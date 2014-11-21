@@ -63,6 +63,7 @@ describe User do
   describe "is valid" do
     before do
       DB[:permission_apps].delete
+      DB[:android_apps].delete
       DB[:users].delete
     end
     

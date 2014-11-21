@@ -19,5 +19,6 @@ module FlyingApk
     end
 
     use Routes::Users
+    use Routes::AndroidApps
   end
 end

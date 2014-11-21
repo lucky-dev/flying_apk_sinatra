@@ -1,13 +1,28 @@
 module ApiV1
   API_VERSION = 1
 
-  class ApiHandler
-    def self.handle(method, http_accept, params)
-      if ApiHelper.get_api_version(http_accept) == 1
+  module ApiHandler
+    def self.handle(method, *http_header, params)
+      if ApiHelper.get_api_version(http_header[0]) == 1
+        # Access to resources without an access token
         if method == :register
-          register(http_accept, params)
+          UserApiHandler.register(params)
         elsif method == :login
-          login(http_accept, params)
+          UserApiHandler.login(params)
+        else
+          # Access to resources with an access token
+          user = User.where(access_token: http_header[1]).first
+          if user
+            # Access token is OK
+            if method == :create_android_app
+              AndroidAppApiHandler.create(user, params)
+            end
+          else
+            # Access token is BAD
+            return ApiHelper.response(401) do
+              { api_version: API_VERSION, response: { errors: [ "user is unauthorized" ] } }
+            end
+          end
         end
       else
         return ApiHelper.response(406) do
@@ -15,8 +30,10 @@ module ApiV1
         end
       end
     end
-
-    def self.register(http_accept, params)
+  end
+  
+  module UserApiHandler
+    def self.register(params)
       name = params[:name]
       email = params[:email]
       password = params[:password]
@@ -34,7 +51,7 @@ module ApiV1
       end
     end
     
-    def self.login(http_accept, params)
+    def self.login(params)
       email = params[:email]
       password = params[:password]
 
@@ -54,6 +71,29 @@ module ApiV1
       else
         return ApiHelper.response(500) do
           { api_version: API_VERSION, response: { errors: [ "email is not found" ] } }
+        end
+      end
+    end
+  end
+  
+  module AndroidAppApiHandler
+    def self.create(user, params)
+      name = params[:name]
+      description = params[:description]
+
+      android_app = AndroidApp.new(name: name, description: description)
+      if android_app.valid?
+        android_app.save
+        
+        permission = PermissionApp.create(user_id: user.id, android_app_id: android_app.id, permission: 'READ_WRITE')
+        permission.save
+        
+        return ApiHelper.response(200) do
+          { api_version: API_VERSION, response: { android_app: { id: android_app.id, name: android_app.name, description: android_app.description } } }
+        end
+      else
+        return ApiHelper.response(500) do
+          { api_version: API_VERSION, response: { errors: android_app.errors.full_messages.uniq } }
         end
       end
     end
