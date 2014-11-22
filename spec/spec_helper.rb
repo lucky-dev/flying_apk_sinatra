@@ -9,8 +9,9 @@ ENV['RACK_ENV'] = 'test'
 # Include the file with entry point in the app
 require File.expand_path('./app.rb')
 
-# Init database
+# All constants
 DB = Sequel.sqlite(FlyingApk::DATABASE_PATH)
+MY_APP_FILE = File.expand_path("./spec/fixture/my_app.apk")
 
 module RSpecMixin
   include Rack::Test::Methods

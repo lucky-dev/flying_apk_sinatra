@@ -5,11 +5,12 @@ require 'json'
 
 module FlyingApk
   DATABASE_PATH = "./db/flying_apk#{ENV['RACK_ENV'] == 'test' ? '_test' : '' }.db"
+  FILES_DIR = File.expand_path("./public/files")
 
   class App < Sinatra::Base
-    # helpers Sinatra::JSON
-
     configure do
+      set :public_folder, FILES_DIR
+      
       Sequel.sqlite(DATABASE_PATH)
 
       # Include all models, helpers and routes
@@ -20,5 +21,6 @@ module FlyingApk
 
     use Routes::Users
     use Routes::AndroidApps
+    use Routes::Builds
   end
 end

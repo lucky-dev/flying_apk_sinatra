@@ -61,7 +61,7 @@ describe AndroidApp do
     it "and has builds" do
       @android_app.save
 
-      @build = Build.create(version: "1.0", fixes: "Some fixes")
+      @build = Build.create(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
       @android_app.add_build(@build)
       expect(@android_app.builds.size).to eq(1)
     end

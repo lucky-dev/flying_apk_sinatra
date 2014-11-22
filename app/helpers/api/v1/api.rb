@@ -22,6 +22,8 @@ module ApiV1
               AndroidAppApiHandler.update_android_app(user, params)
             elsif method == :delete_android_app
               AndroidAppApiHandler.delete_android_app(user, params)
+            elsif method == :create_build
+              BuildApiHandler.create_build(user, params)
             end
           else
             # Access token is BAD
@@ -159,6 +161,56 @@ module ApiV1
         
         return ApiHelper.response(200) do
           { api_version: API_VERSION, response: { app: { id: android_app.id } } }
+        end
+      else
+        return ApiHelper.response(403) do
+          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+        end
+      end
+    end
+  end
+  
+  module BuildApiHandler    
+    def self.create_build(user, params)
+      version = params[:version]
+      fixes = params[:fixes]
+      app_id = params[:app_id]
+      file = params[:file]
+      
+      permission_for_app = user.permission_apps_dataset.where(android_app_id: app_id, permission: 'READ_WRITE').first
+      if permission_for_app
+        build = Build.new(version: version, fixes: fixes)
+        
+        if build.valid?
+          if file
+            filename = file[:filename]
+            tempfile = file[:tempfile]
+            
+            if BuildHelper.android_app?(filename)
+              build.file_name = filename.gsub(/.*\.apk/i, "#{BuildHelper.generate_build_name(user.name, user.email)}.apk")
+              
+              path_to_file = File.join(FlyingApk::FILES_DIR, build.file_name)
+              
+              File.open(path_to_file, 'wb') { |f| f.write(tempfile.read) }
+              
+              build.file_checksum = BuildHelper.get_build_hash(path_to_file)
+              build.created_time = Time.now
+              
+              build.save
+              
+              return ApiHelper.response(200) do
+                 { api_version: API_VERSION, response: { build: { id: build.id, version: build.version, fixes: build.fixes, file_name: build.file_name, file_checksum: build.file_checksum } } }
+              end
+            end
+          else
+            return ApiHelper.response(500) do
+              { api_version: API_VERSION, response: { errors: [ "file was not uploaded" ] } }
+            end
+          end
+        else
+          return ApiHelper.response(500) do
+            { api_version: API_VERSION, response: { errors: build.errors.full_messages.uniq } }
+          end
         end
       else
         return ApiHelper.response(403) do

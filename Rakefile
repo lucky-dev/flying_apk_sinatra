@@ -34,3 +34,16 @@ namespace :db do
     end
   end
 end
+
+namespace :apk do
+  require 'find'
+
+  task :delete do
+    Find.find('./public/files') do |path|
+      if path =~ /.*\.apk$/
+        File.delete(path)
+        puts "#{path} is deleted"
+      end
+    end
+  end
+end

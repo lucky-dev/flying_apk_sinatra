@@ -1,3 +1,4 @@
 # Ignore the default SQLite database.
 /db/*.db
 .DS_Store
+/public/files/*.apk
