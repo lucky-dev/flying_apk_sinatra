@@ -35,6 +35,7 @@ describe AndroidApp do
     end
     
     it "when name is already taken" do
+      DB[:permission_apps].delete
       DB[:builds].delete
       DB[:android_apps].delete
 
@@ -48,6 +49,7 @@ describe AndroidApp do
 
   describe "is valid" do
     before do
+      DB[:permission_apps].delete
       DB[:builds].delete
       DB[:android_apps].delete
     end

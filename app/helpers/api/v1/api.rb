@@ -18,6 +18,10 @@ module ApiV1
               AndroidAppApiHandler.create(user, params)
             elsif method == :get_android_apps
               AndroidAppApiHandler.get_android_apps(user)
+            elsif method == :update_android_app
+              AndroidAppApiHandler.update_android_app(user, params)
+            elsif method == :delete_android_app
+              AndroidAppApiHandler.delete_android_app(user, params)
             end
           else
             # Access token is BAD
@@ -100,9 +104,8 @@ module ApiV1
       end
     end
 
-    def self.get_android_apps(user)      
-      all_app_ids = PermissionApp.select(:android_app_id).where(user_id: user.id).order(:id)
-      all_apps = AndroidApp.where(id: all_app_ids).all
+    def self.get_android_apps(user)
+      all_apps = AndroidApp.where(id: user.permission_apps_dataset.select(:android_app_id)).order(:id).all
       
       apps = []
       all_apps.each do |app|
@@ -111,6 +114,56 @@ module ApiV1
       
       return ApiHelper.response(200) do
         { api_version: API_VERSION, response: { apps: apps } }
+      end
+    end
+    
+    def self.update_android_app(user, params)
+      id = params[:id]
+      name = params[:name]
+      description = params[:description]
+      
+      permission_for_app = user.permission_apps_dataset.where(android_app_id: id, permission: 'READ_WRITE').first
+      if permission_for_app
+        android_app = permission_for_app.android_app
+
+        android_app.name = name || android_app.name
+        android_app.description = description || android_app.description
+        
+        if android_app.valid?
+          return ApiHelper.response(200) do
+            { api_version: API_VERSION, response: { app: { name: android_app.name, description: android_app.description } } }
+          end
+        else
+          return ApiHelper.response(500) do
+            { api_version: API_VERSION, response: { errors: android_app.errors.full_messages.uniq } }
+          end
+        end
+      else
+        return ApiHelper.response(403) do
+          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+        end
+      end
+    end
+    
+    def self.delete_android_app(user, params)
+      id = params[:id]
+      name = params[:name]
+      description = params[:description]
+      
+      permission_for_app = user.permission_apps_dataset.where(android_app_id: id, permission: 'READ_WRITE').first
+      if permission_for_app
+        android_app = permission_for_app.android_app
+        
+        permission_for_app.delete
+        android_app.delete
+        
+        return ApiHelper.response(200) do
+          { api_version: API_VERSION, response: { app: { id: android_app.id } } }
+        end
+      else
+        return ApiHelper.response(403) do
+          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+        end
       end
     end
   end
