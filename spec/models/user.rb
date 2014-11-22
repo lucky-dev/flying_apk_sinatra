@@ -82,8 +82,8 @@ describe User do
     it "and has apps" do
       @user.save
 
-      @app = AndroidApp.create(name: "My cool app", description: "Cool app")      
-      @permission = PermissionApp.create(user_id: @user.id, android_app_id: @app.id, permission: 'READ_WRITE')
+      app = AndroidApp.create(name: "My cool app", description: "Cool app")      
+      permission = PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
 
       expect(@user.permission_apps.size).to eq(1)
     end

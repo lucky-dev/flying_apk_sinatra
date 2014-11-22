@@ -84,5 +84,50 @@ describe AndroidApp do
      end
      
    end
+   
+   describe "is gotten by" do
+     before do
+       DB[:permission_apps].delete
+       DB[:android_apps].delete
+       DB[:users].delete
+
+       @header = { "HTTP_ACCEPT" => "application/vnd.flyingapp; version=1" }
+
+       @user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
+     end
+     
+     it "an authorized user" do
+       3.times do |index|
+         app = AndroidApp.create(name: "My cool app #{index}", description: "Cool app")      
+         PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       end
+      
+       # Create an app for other user
+       other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
+       app = AndroidApp.create(name: "My cool app 100", description: "Cool app")      
+       PermissionApp.create(user_id: other_user.id, android_app_id: app.id, permission: 'READ')
+      
+       @header["HTTP_AUTHORIZATION"] = @user.access_token
+
+       get "/android_apps", {}, @header
+      
+       json_response = JSON.parse(last_response.body)
+      
+       expect(last_response.status).to eq(200)
+      
+       expect(json_response["response"]["apps"].size).to eq(3)
+     end
+     
+     it "an unauthorized user" do
+       get "/android_apps", {}, @header
+      
+       json_response = JSON.parse(last_response.body)
+      
+       expect(last_response.status).to eq(401)
+      
+       expect(json_response["response"]["errors"]).to include("user is unauthorized")
+     end
+     
+   end
   
 end

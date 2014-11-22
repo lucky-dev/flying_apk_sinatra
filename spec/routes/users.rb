@@ -52,7 +52,7 @@ describe User do
         DB[:permission_apps].delete
         DB[:users].delete
         
-        user = User.new(name: "Bob", email: "test@example.com", password: "1234567")
+        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
         user.save
         
         post "/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
@@ -115,7 +115,7 @@ describe User do
       DB[:permission_apps].delete
       DB[:users].delete
 
-      user = User.new(name: "Bob", email: "test@example.com", password: "1234567")
+      user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
       user.save
     end
     
@@ -164,10 +164,10 @@ describe User do
   describe "enters in the system" do    
     before do
       DB[:permission_apps].delete
+      DB[:android_apps].delete
       DB[:users].delete
 
-      user = User.new(name: "Bob", email: "test@example.com", password: "1234567")
-      user.save
+      @user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
     end
     
     it "when email and password are right" do      
@@ -179,6 +179,7 @@ describe User do
 
       expect(json_response["response"]).to include("access_token")
     end
+    
   end
 
 end

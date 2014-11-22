@@ -6,5 +6,5 @@ class PermissionApp < Sequel::Model
   end
 
   many_to_one :user
-  many_to_one :app
+  many_to_one :android_app
 end

@@ -16,6 +16,8 @@ module ApiV1
             # Access token is OK
             if method == :create_android_app
               AndroidAppApiHandler.create(user, params)
+            elsif method == :get_android_apps
+              AndroidAppApiHandler.get_android_apps(user)
             end
           else
             # Access token is BAD
@@ -95,6 +97,20 @@ module ApiV1
         return ApiHelper.response(500) do
           { api_version: API_VERSION, response: { errors: android_app.errors.full_messages.uniq } }
         end
+      end
+    end
+
+    def self.get_android_apps(user)      
+      all_app_ids = PermissionApp.select(:android_app_id).where(user_id: user.id).order(:id)
+      all_apps = AndroidApp.where(id: all_app_ids).all
+      
+      apps = []
+      all_apps.each do |app|
+        apps << { id: app.id, name: app.name, description: app.description }
+      end
+      
+      return ApiHelper.response(200) do
+        { api_version: API_VERSION, response: { apps: apps } }
       end
     end
   end
