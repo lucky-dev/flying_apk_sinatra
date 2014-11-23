@@ -12,7 +12,7 @@ module BuildHelper
     Digest::MD5.hexdigest("#{user_name}#{user_email}#{Time.now}")
   end
   
-  def self.get_build_hash(path_to_file)
-    Digest::MD5.file(path_to_file).hexdigest
+  def self.get_build_hash(path_to_build)
+    Digest::MD5.file(path_to_build).hexdigest
   end
 end

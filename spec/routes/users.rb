@@ -53,7 +53,6 @@ describe User do
         DB[:users].delete
         
         user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
-        user.save
         
         post "/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
 
@@ -116,7 +115,6 @@ describe User do
       DB[:users].delete
 
       user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
-      user.save
     end
     
     it "when email is wrong" do
@@ -164,6 +162,7 @@ describe User do
   describe "enters in the system" do    
     before do
       DB[:permission_apps].delete
+      DB[:builds].delete
       DB[:android_apps].delete
       DB[:users].delete
 
