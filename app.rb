@@ -4,7 +4,7 @@ require 'find'
 require 'json'
 
 module FlyingApk
-  DATABASE_PATH = "./db/flying_apk#{ENV['RACK_ENV'] == 'test' ? '_test' : '' }.db"
+  DATABASE_PATH = File.expand_path("./db/flying_apk#{ENV['RACK_ENV'] == 'test' ? '_test' : '' }.db")
   FILES_DIR = File.expand_path("./public/files")
 
   class App < Sinatra::Base
@@ -13,10 +13,10 @@ module FlyingApk
       
       Sequel.sqlite(DATABASE_PATH)
 
-      # Include all models, helpers and routes
-      Find.find("./app") do |path|
-        require path if path =~ /\/(models|routes|helpers)\/.*\.rb$/
-      end
+      # Include all models, helpers and routes      
+      require_relative 'app/helpers/init.rb'
+      require_relative 'app/models/init.rb'
+      require_relative 'app/routes/init.rb'
     end
 
     use Routes::Users

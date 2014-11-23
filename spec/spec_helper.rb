@@ -7,7 +7,7 @@ ENV['RACK_ENV'] = 'test'
 
 # Include all necessary files
 # Include the file with entry point in the app
-require File.expand_path('./app.rb')
+require_relative '../app.rb'
 
 # All constants
 DB = Sequel.sqlite(FlyingApk::DATABASE_PATH)
