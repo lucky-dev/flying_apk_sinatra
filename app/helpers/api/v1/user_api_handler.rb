@@ -17,7 +17,7 @@ module ApiV1
         end
       end
     end
-  
+    
     def self.login(params)
       email = params[:email]
       password = params[:password]
