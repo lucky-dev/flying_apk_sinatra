@@ -1,7 +1,5 @@
 require 'rack/test'
 require 'rake'
-require 'find'
-require 'sequel'
 
 ENV['RACK_ENV'] = 'test'
 

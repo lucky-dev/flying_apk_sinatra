@@ -1,7 +1,5 @@
 require 'sinatra/base'
 require 'sequel'
-require 'find'
-require 'json'
 
 module FlyingApk
   DATABASE_PATH = File.expand_path("./db/flying_apk#{ENV['RACK_ENV'] == 'test' ? '_test' : '' }.db")

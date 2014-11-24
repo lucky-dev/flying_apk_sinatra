@@ -24,11 +24,12 @@ module ApiV1
             
               build.file_checksum = BuildHelper.get_build_hash(path_to_file)
               build.created_time = Time.now
+              build.android_app_id = app_id
             
               build.save
             
               return ApiHelper.response(200) do
-                 { api_version: API_VERSION, response: { build: { id: build.id, version: build.version, fixes: build.fixes, file_name: build.file_name, file_checksum: build.file_checksum } } }
+                 { api_version: API_VERSION, response: { build: { id: build.id, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum } } }
               end
             end
           else
@@ -48,8 +49,12 @@ module ApiV1
       end
     end
   
+    require 'pry'
+    
     def self.get_builds(user, params)
       app_id = params[:app_id]
+      
+      # binding.pry
     
       permission_for_app = user.permission_apps_dataset.where(android_app_id: app_id).first
       if permission_for_app
@@ -57,7 +62,7 @@ module ApiV1
 
         builds = []
         all_builds.each do |build|
-          builds << { id: build.id, version: build.version, fixes: build.fixes, file_name: build.file_name, file_checksum: build.file_checksum }
+          builds << { id: build.id, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum }
         end
 
         return ApiHelper.response(200) do
