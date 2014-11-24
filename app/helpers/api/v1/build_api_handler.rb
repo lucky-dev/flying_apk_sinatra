@@ -48,13 +48,9 @@ module ApiV1
         end
       end
     end
-  
-    require 'pry'
     
     def self.get_builds(user, params)
       app_id = params[:app_id]
-      
-      # binding.pry
     
       permission_for_app = user.permission_apps_dataset.where(android_app_id: app_id).first
       if permission_for_app
