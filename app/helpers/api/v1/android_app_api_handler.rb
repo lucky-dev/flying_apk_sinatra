@@ -21,7 +21,7 @@ module ApiV1
     end
 
     def self.get_android_apps(user)
-      all_apps = AndroidApp.where(id: user.permission_apps_dataset.select(:android_app_id)).order(:id).all
+      all_apps = AndroidApp.where(id: user.permission_apps_dataset.select(:android_app_id)).order(:name).all
     
       apps = []
       all_apps.each do |app|

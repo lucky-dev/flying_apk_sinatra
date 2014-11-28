@@ -4,7 +4,7 @@ describe ApiHelper do
 
   describe "Accept header" do
     it "has an api version" do
-      type_apps = ["application/vnd.flyingapp; version=1", "application/vnd.flyingapp;version=1"]
+      type_apps = ["application/vnd.flyingapk; version=1", "application/vnd.flyingapk;version=1"]
       type_apps.each do |type_app|
         expect(ApiHelper.get_api_version(type_app)).to eq(1)
       end      

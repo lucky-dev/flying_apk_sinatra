@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Build do
   
   before do
-    @header = { "HTTP_ACCEPT" => "application/vnd.flyingapp; version=1" }
+    @header = { "HTTP_ACCEPT" => "application/vnd.flyingapk; version=1" }
   end
   
    describe "is not created" do
@@ -119,7 +119,7 @@ describe Build do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
        3.times do |index|
-         build = Build.new(version: "#{index}.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app_#{index}.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+         build = Build.new(version: "#{index}.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app_#{index}.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
        end
 
@@ -151,7 +151,7 @@ describe Build do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
        3.times do |index|
-         build = Build.new(version: "#{index}.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app_#{index}.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+         build = Build.new(version: "#{index}.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app_#{index}.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
        end
 
@@ -184,7 +184,7 @@ describe Build do
      it "an authorized user who has all permissions" do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
-       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
        @header["HTTP_AUTHORIZATION"] = @user.access_token
@@ -217,7 +217,7 @@ describe Build do
        it "when fixes of the build is not present" do
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
          PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
-         build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+         build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
 
          @header["HTTP_AUTHORIZATION"] = @user.access_token
@@ -234,7 +234,7 @@ describe Build do
        it "when user has no permissions to this app" do
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
          PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
-         build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+         build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
 
          # Create an app for other user
@@ -256,7 +256,7 @@ describe Build do
      it "an unauthorized user" do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
-       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
        put "/builds/#{build.id}", {}, @header
@@ -284,7 +284,7 @@ describe Build do
      it "an authorized user who has all permissions" do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
-       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
        @header["HTTP_AUTHORIZATION"] = @user.access_token
@@ -316,7 +316,7 @@ describe Build do
        it "who has no permissions to this app" do
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
          PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
-         build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+         build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
          
          # Create an app for other user
@@ -337,7 +337,7 @@ describe Build do
      it "an unauthorized user" do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
-       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
+       build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
        put "/builds/#{build.id}", {}, @header

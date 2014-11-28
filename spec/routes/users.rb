@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe User do
   before do
-    @header = { "HTTP_ACCEPT" => "application/vnd.flyingapp; version=1" }
+    @header = { "HTTP_ACCEPT" => "application/vnd.flyingapk; version=1" }
   end
 
   describe "is not created" do

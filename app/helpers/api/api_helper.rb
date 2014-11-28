@@ -5,7 +5,7 @@ module ApiHelper
     if header_accept
       header = header_accept.match(VALID_APP_TYPE_REGEX)
 
-      is_valid_type_app = (header && !header.captures.empty? && header.captures[0] == 'flyingapp')
+      is_valid_type_app = (header && !header.captures.empty? && header.captures[0] == 'flyingapk')
 
       if (is_valid_type_app)
         return header.captures[1] ? header.captures[1].to_i : 0

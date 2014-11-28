@@ -23,7 +23,7 @@ module ApiV1
               File.open(path_to_file, 'wb') { |f| f.write(tempfile.read) }
             
               build.file_checksum = BuildHelper.get_build_hash(path_to_file)
-              build.created_time = Time.now
+              build.created_time = Time.now.utc
               build.android_app_id = app_id
             
               build.save
