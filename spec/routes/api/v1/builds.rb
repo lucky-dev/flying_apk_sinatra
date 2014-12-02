@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative '../../../spec_helper'
 
 describe Build do
   
@@ -11,7 +11,7 @@ describe Build do
      describe "when user is not authorized" do
 
        it "and the build has all params" do
-         post "/builds?app_id=1", { "version" => "1.0", "fixes" => "Some fixes", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
+         post "/api/builds?app_id=1", { "version" => "1.0", "fixes" => "Some fixes", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
 
          expect(last_response.status).to eq(401)
 
@@ -21,7 +21,7 @@ describe Build do
        end
 
        it "and the build has no params" do
-         post "/android_apps", {}, @header
+         post "/api/builds", {}, @header
 
          expect(last_response.status).to eq(401)
 
@@ -48,7 +48,7 @@ describe Build do
 
          @header["HTTP_AUTHORIZATION"] = user.access_token
 
-         post "/builds?app_id=#{app.id}", { "version" => "1.0", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
+         post "/api/builds?app_id=#{app.id}", { "version" => "1.0", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
 
          expect(last_response.status).to eq(500)
 
@@ -64,7 +64,7 @@ describe Build do
 
          @header["HTTP_AUTHORIZATION"] = user.access_token
 
-         post "/builds?app_id=#{app.id}", { "version" => "1.0", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
+         post "/api/builds?app_id=#{app.id}", { "version" => "1.0", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
 
          expect(last_response.status).to eq(403)
 
@@ -93,7 +93,7 @@ describe Build do
        
        @header["HTTP_AUTHORIZATION"] = user.access_token
      
-       post "/builds?app_id=#{app.id}", { "version" => "1.0", "fixes" => "Some fixes", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
+       post "/api/builds?app_id=#{app.id}", { "version" => "1.0", "fixes" => "Some fixes", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
      
        expect(last_response.status).to eq(200)
 
@@ -125,7 +125,7 @@ describe Build do
 
        @header["HTTP_AUTHORIZATION"] = @user.access_token
 
-       get "/builds?app_id=#{app.id}", {}, @header
+       get "/api/builds?app_id=#{app.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -138,7 +138,7 @@ describe Build do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
 
-       get "/builds?app_id=#{app.id}", {}, @header
+       get "/api/builds?app_id=#{app.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -159,7 +159,7 @@ describe Build do
 
        @header["HTTP_AUTHORIZATION"] = other_user.access_token
 
-       get "/builds?app_id=#{app.id}", {}, @header
+       get "/api/builds?app_id=#{app.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -189,7 +189,7 @@ describe Build do
 
        @header["HTTP_AUTHORIZATION"] = @user.access_token
 
-       put "/builds/#{build.id}", { fixes: "Amazing fixes" }, @header
+       put "/api/builds/#{build.id}", { fixes: "Amazing fixes" }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -222,7 +222,7 @@ describe Build do
 
          @header["HTTP_AUTHORIZATION"] = @user.access_token
 
-         put "/builds/#{build.id}", { version: "1.0", fixes: "" }, @header
+         put "/api/builds/#{build.id}", { version: "1.0", fixes: "" }, @header
 
          json_response = JSON.parse(last_response.body)
 
@@ -242,7 +242,7 @@ describe Build do
 
          @header["HTTP_AUTHORIZATION"] = other_user.access_token
 
-         put "/builds/#{build.id}", {}, @header
+         put "/api/builds/#{build.id}", {}, @header
 
          json_response = JSON.parse(last_response.body)
 
@@ -259,7 +259,7 @@ describe Build do
        build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
-       put "/builds/#{build.id}", {}, @header
+       put "/api/builds/#{build.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -289,7 +289,7 @@ describe Build do
 
        @header["HTTP_AUTHORIZATION"] = @user.access_token
 
-       delete "/builds/#{build.id}", {}, @header
+       delete "/api/builds/#{build.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -324,7 +324,7 @@ describe Build do
 
          @header["HTTP_AUTHORIZATION"] = other_user.access_token
 
-         delete "/builds/#{build.id}", {}, @header
+         delete "/api/builds/#{build.id}", {}, @header
 
          json_response = JSON.parse(last_response.body)
 
@@ -340,7 +340,7 @@ describe Build do
        build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
-       put "/builds/#{build.id}", {}, @header
+       put "/api/builds/#{build.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 

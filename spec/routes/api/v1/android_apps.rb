@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative '../../../spec_helper'
 
 describe AndroidApp do
   
@@ -11,7 +11,7 @@ describe AndroidApp do
      describe "when user is not authorized" do
        
        it "and an app has all params" do
-         post "/android_apps", { "name" => "Cool App", "description" => "My Cool App" }, @header
+         post "/api/android_apps", { "name" => "Cool App", "description" => "My Cool App" }, @header
        
          expect(last_response.status).to eq(401)
 
@@ -21,7 +21,7 @@ describe AndroidApp do
        end
        
        it "and an app has no params" do       
-         post "/android_apps", {}, @header
+         post "/api/android_apps", {}, @header
 
          expect(last_response.status).to eq(401)
 
@@ -46,7 +46,7 @@ describe AndroidApp do
          
          @header["HTTP_AUTHORIZATION"] = user.access_token
        
-         post "/android_apps", { "description" => "My Cool App" }, @header
+         post "/api/android_apps", { "description" => "My Cool App" }, @header
 
          expect(last_response.status).to eq(500)
 
@@ -73,7 +73,7 @@ describe AndroidApp do
        
        @header["HTTP_AUTHORIZATION"] = user.access_token
      
-       post "/android_apps", { "name" => "Cool App", "description" => "My Cool App" }, @header
+       post "/api/android_apps", { "name" => "Cool App", "description" => "My Cool App" }, @header
      
        expect(last_response.status).to eq(200)
 
@@ -108,7 +108,7 @@ describe AndroidApp do
       
        @header["HTTP_AUTHORIZATION"] = @user.access_token
 
-       get "/android_apps", {}, @header
+       get "/api/android_apps", {}, @header
       
        json_response = JSON.parse(last_response.body)
       
@@ -118,7 +118,7 @@ describe AndroidApp do
      end
      
      it "an unauthorized user" do
-       get "/android_apps", {}, @header
+       get "/api/android_apps", {}, @header
       
        json_response = JSON.parse(last_response.body)
       
@@ -145,7 +145,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       put "/android_apps/#{app.id}", { description: "Amazing app" }, @header
+       put "/api/android_apps/#{app.id}", { description: "Amazing app" }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -176,7 +176,7 @@ describe AndroidApp do
 
          @header["HTTP_AUTHORIZATION"] = @user.access_token
 
-         put "/android_apps/#{app.id}", { name: "", description: "Amazing app" }, @header
+         put "/api/android_apps/#{app.id}", { name: "", description: "Amazing app" }, @header
 
          json_response = JSON.parse(last_response.body)
 
@@ -194,7 +194,7 @@ describe AndroidApp do
 
          @header["HTTP_AUTHORIZATION"] = other_user.access_token
 
-         put "/android_apps/#{app.id}", {}, @header
+         put "/api/android_apps/#{app.id}", {}, @header
 
          json_response = JSON.parse(last_response.body)
 
@@ -209,7 +209,7 @@ describe AndroidApp do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")      
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
        
-       put "/android_apps/#{app.id}", {}, @header
+       put "/api/android_apps/#{app.id}", {}, @header
       
        json_response = JSON.parse(last_response.body)
       
@@ -236,7 +236,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       delete "/android_apps/#{app.id}", {}, @header
+       delete "/api/android_apps/#{app.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -270,7 +270,7 @@ describe AndroidApp do
 
          @header["HTTP_AUTHORIZATION"] = other_user.access_token
 
-         delete "/android_apps/#{app.id}", {}, @header
+         delete "/api/android_apps/#{app.id}", {}, @header
 
          json_response = JSON.parse(last_response.body)
 
@@ -284,7 +284,7 @@ describe AndroidApp do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
 
-       put "/android_apps/#{app.id}", {}, @header
+       put "/api/android_apps/#{app.id}", {}, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -316,7 +316,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/add_user", { email: other_user.email }, @header
+       post "/api/android_apps/#{app.id}/add_user", { email: other_user.email }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -339,7 +339,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/add_user", { email: other_user.email }, @header
+       post "/api/android_apps/#{app.id}/add_user", { email: other_user.email }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -355,7 +355,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/add_user", { email: user.email }, @header
+       post "/api/android_apps/#{app.id}/add_user", { email: user.email }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -388,7 +388,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/remove_user", { email: other_user.email }, @header
+       post "/api/android_apps/#{app.id}/remove_user", { email: other_user.email }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -407,7 +407,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/remove_user", { email: user.email }, @header
+       post "/api/android_apps/#{app.id}/remove_user", { email: user.email }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -426,7 +426,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/remove_user", { email: "mike@example.com" }, @header
+       post "/api/android_apps/#{app.id}/remove_user", { email: "mike@example.com" }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -442,7 +442,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/remove_user", { email: "mike@example.com" }, @header
+       post "/api/android_apps/#{app.id}/remove_user", { email: "mike@example.com" }, @header
 
        json_response = JSON.parse(last_response.body)
 
@@ -458,7 +458,7 @@ describe AndroidApp do
 
        @header["HTTP_AUTHORIZATION"] = user.access_token
 
-       post "/android_apps/#{app.id}/add_user", { email: "mike@example.com" }, @header
+       post "/api/android_apps/#{app.id}/add_user", { email: "mike@example.com" }, @header
 
        json_response = JSON.parse(last_response.body)
 

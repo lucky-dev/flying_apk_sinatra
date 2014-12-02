@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative '../../../spec_helper'
 
 describe User do
   before do
@@ -8,7 +8,7 @@ describe User do
   describe "is not created" do
 
     it "when header is empty" do
-      post "/register"
+      post "/api/register"
       
       expect(last_response.status).to eq(406)
   
@@ -18,7 +18,7 @@ describe User do
     end
 
     it "when name is not valid" do
-      post "/register" , { "email" => "test@example.com", "password" => "1234567" }, @header
+      post "/api/register" , { "email" => "test@example.com", "password" => "1234567" }, @header
 
       expect(last_response.status).to eq(500)
   
@@ -30,7 +30,7 @@ describe User do
     describe "when email" do
       
       it "is not present" do
-        post "/register", { "name" => "test", "password" => "1234567" }, @header
+        post "/api/register", { "name" => "test", "password" => "1234567" }, @header
 
         expect(last_response.status).to eq(500)
   
@@ -40,7 +40,7 @@ describe User do
       end
       
       it "is invalid" do
-        post '/register' , { "name" => "test", "email" => "test_example.com", "password" => "1234567" }, @header
+        post '/api/register' , { "name" => "test", "email" => "test_example.com", "password" => "1234567" }, @header
         expect(last_response.status).to eq(500)
   
         json_response = JSON.parse(last_response.body)
@@ -54,7 +54,7 @@ describe User do
         
         user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
         
-        post "/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
+        post "/api/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
 
         expect(last_response.status).to eq(500)
 
@@ -68,7 +68,7 @@ describe User do
     describe "when password" do
       
       it "is not present" do
-        post "/register", { "name" => "test", "email" => "test@example.com" }, @header
+        post "/api/register", { "name" => "test", "email" => "test@example.com" }, @header
 
         expect(last_response.status).to eq(500)
   
@@ -78,7 +78,7 @@ describe User do
       end
       
       it "is too short" do
-        post "/register", { "name" => "test", "email" => "test_example.com", "password" => "123" }, @header
+        post "/api/register", { "name" => "test", "email" => "test_example.com", "password" => "123" }, @header
         
         expect(last_response.status).to eq(500)
   
@@ -98,7 +98,7 @@ describe User do
     end
 
     it "when all fields are valid" do      
-      post "/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
+      post "/api/register", { "name" => "test", "email" => "test@example.com", "password" => "1234567" }, @header
 
       expect(last_response.status).to eq(200)
 
@@ -118,7 +118,7 @@ describe User do
     end
     
     it "when email is wrong" do
-      post "/login", { "email" => "test123@example.com", "password" => "1234567" }, @header
+      post "/api/login", { "email" => "test123@example.com", "password" => "1234567" }, @header
       
       expect(last_response.status).to eq(500)
 
@@ -128,7 +128,7 @@ describe User do
     end
     
     it "when email is nil" do
-      post "/login", { "password" => "1234567" }, @header
+      post "/api/login", { "password" => "1234567" }, @header
       
       expect(last_response.status).to eq(500)
 
@@ -138,7 +138,7 @@ describe User do
     end
     
     it "when password does not match" do
-      post "/login", { "email" => "test@example.com", "password" => "12345678" }, @header
+      post "/api/login", { "email" => "test@example.com", "password" => "12345678" }, @header
       
       expect(last_response.status).to eq(500)
 
@@ -148,7 +148,7 @@ describe User do
     end
     
     it "when password is nil" do
-      post "/login", { "email" => "test@example.com"}, @header
+      post "/api/login", { "email" => "test@example.com"}, @header
       
       expect(last_response.status).to eq(500)
 
@@ -170,7 +170,7 @@ describe User do
     end
     
     it "when email and password are right" do      
-      post "/login", { "email" => "test@example.com", "password" => "1234567"}, @header
+      post "/api/login", { "email" => "test@example.com", "password" => "1234567"}, @header
       
       expect(last_response.status).to eq(200)
 

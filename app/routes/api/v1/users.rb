@@ -1,11 +1,11 @@
 module FlyingApk
   module Routes
     class Users < Sinatra::Base
-      post '/register' do
+      post '/api/register' do
         status, header, body = ApiV1::ApiHandler.handle(:register, request.env['HTTP_ACCEPT'], nil, params)
       end
 
-      post '/login' do
+      post '/api/login' do
         status, header, body = ApiV1::ApiHandler.handle(:login, request.env['HTTP_ACCEPT'], nil, params)
       end
     end
