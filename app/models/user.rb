@@ -4,7 +4,6 @@ class User < Sequel::Model
   def before_save
     self.email.downcase!
     self.encoded_password = UserHelper.salt_password(self.password) if @password_changed || new?
-    self.access_token = UserHelper::generate_access_token(self.name, self.email)
     super
   end
 
@@ -20,6 +19,7 @@ class User < Sequel::Model
     validates_min_length 6, :password if @password_changed || new?
   end
   one_to_many :permission_apps
+  one_to_many :access_tokens
   
   # Virtual property
   def password

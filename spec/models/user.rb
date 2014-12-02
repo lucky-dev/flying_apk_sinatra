@@ -50,6 +50,7 @@ describe User do
 
     it "when email address is already taken" do
       DB[:permission_apps].delete
+      DB[:access_tokens].delete
       DB[:users].delete
       
       user_with_same_email = @user.dup
@@ -64,6 +65,7 @@ describe User do
     before do
       DB[:permission_apps].delete
       DB[:android_apps].delete
+      DB[:access_tokens].delete
       DB[:users].delete
     end
     

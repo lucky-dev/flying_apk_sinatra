@@ -36,6 +36,7 @@ describe AndroidApp do
        
        before do
          DB[:permission_apps].delete
+         DB[:access_tokens].delete
          DB[:builds].delete
          DB[:android_apps].delete
          DB[:users].delete
@@ -43,8 +44,10 @@ describe AndroidApp do
        
        it "and an app has no name" do
          user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
+         access_token = UserHelper.generate_access_token(user.name, user.email)
+         user.add_access_token(access_token: access_token)
          
-         @header["HTTP_AUTHORIZATION"] = user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
        
          post "/api/android_apps", { "description" => "My Cool App" }, @header
 
@@ -63,6 +66,7 @@ describe AndroidApp do
      
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -70,8 +74,10 @@ describe AndroidApp do
      
      it "when user is authorized and an app has all params" do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
        
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
      
        post "/api/android_apps", { "name" => "Cool App", "description" => "My Cool App" }, @header
      
@@ -88,6 +94,7 @@ describe AndroidApp do
    describe "is gotten by" do
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -105,8 +112,10 @@ describe AndroidApp do
        other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app 100", description: "Cool app")      
        PermissionApp.create(user_id: other_user.id, android_app_id: app.id, permission: 'READ')
+       access_token = UserHelper.generate_access_token(@user.name, @user.email)
+       @user.add_access_token(access_token: access_token)
       
-       @header["HTTP_AUTHORIZATION"] = @user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        get "/api/android_apps", {}, @header
       
@@ -133,6 +142,7 @@ describe AndroidApp do
      
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -142,8 +152,10 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        put "/api/android_apps/#{app.id}", { description: "Amazing app" }, @header
 
@@ -161,6 +173,7 @@ describe AndroidApp do
      
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -173,8 +186,10 @@ describe AndroidApp do
        it "when name of the app is not present" do
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
          PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
+         access_token = UserHelper.generate_access_token(@user.name, @user.email)
+         @user.add_access_token(access_token: access_token)
 
-         @header["HTTP_AUTHORIZATION"] = @user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          put "/api/android_apps/#{app.id}", { name: "", description: "Amazing app" }, @header
 
@@ -191,8 +206,10 @@ describe AndroidApp do
          
          # Create an app for other user
          other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
+         access_token = UserHelper.generate_access_token(other_user.name, other_user.email)
+         other_user.add_access_token(access_token: access_token)
 
-         @header["HTTP_AUTHORIZATION"] = other_user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          put "/api/android_apps/#{app.id}", {}, @header
 
@@ -224,6 +241,7 @@ describe AndroidApp do
      
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -233,8 +251,11 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        delete "/api/android_apps/#{app.id}", {}, @header
 
@@ -252,6 +273,7 @@ describe AndroidApp do
 
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -267,8 +289,10 @@ describe AndroidApp do
          
          # Create an app for other user
          other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
+         access_token = UserHelper.generate_access_token(other_user.name, other_user.email)
+         other_user.add_access_token(access_token: access_token)
 
-         @header["HTTP_AUTHORIZATION"] = other_user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          delete "/api/android_apps/#{app.id}", {}, @header
 
@@ -299,6 +323,7 @@ describe AndroidApp do
      
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -308,13 +333,16 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
      
        # Create an app for other user
        other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
      
        expect(other_user.permission_apps.size).to eq(0)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/add_user", { email: other_user.email }, @header
 
@@ -332,12 +360,15 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
      
        # Create an app for other user
        other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
        PermissionApp.create(user_id: other_user.id, android_app_id: app.id, permission: 'READ')
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/add_user", { email: other_user.email }, @header
 
@@ -352,8 +383,11 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/add_user", { email: user.email }, @header
 
@@ -370,6 +404,7 @@ describe AndroidApp do
 
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -379,6 +414,9 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
 
        # Create an app for other user
        other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
@@ -386,7 +424,7 @@ describe AndroidApp do
 
        expect(other_user.permission_apps.size).to eq(1)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/remove_user", { email: other_user.email }, @header
 
@@ -404,8 +442,11 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/remove_user", { email: user.email }, @header
 
@@ -421,10 +462,13 @@ describe AndroidApp do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
        
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
+       
        # Other user
        other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/remove_user", { email: "mike@example.com" }, @header
 
@@ -439,8 +483,11 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/remove_user", { email: "mike@example.com" }, @header
 
@@ -455,8 +502,11 @@ describe AndroidApp do
        user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
 
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        post "/api/android_apps/#{app.id}/add_user", { email: "mike@example.com" }, @header
 

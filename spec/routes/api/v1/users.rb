@@ -50,6 +50,7 @@ describe User do
       
       it "is already taken" do
         DB[:permission_apps].delete
+        DB[:access_tokens].delete
         DB[:users].delete
         
         user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
@@ -94,6 +95,7 @@ describe User do
   describe "is created" do
     before do
       DB[:permission_apps].delete
+      DB[:access_tokens].delete
       DB[:users].delete
     end
 
@@ -112,6 +114,7 @@ describe User do
   describe "does not enter in the system" do
     before do
       DB[:permission_apps].delete
+      DB[:access_tokens].delete
       DB[:users].delete
 
       user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
@@ -162,6 +165,7 @@ describe User do
   describe "enters in the system" do    
     before do
       DB[:permission_apps].delete
+      DB[:access_tokens].delete
       DB[:builds].delete
       DB[:android_apps].delete
       DB[:users].delete
@@ -179,6 +183,88 @@ describe User do
       expect(json_response["response"]).to include("access_token")
     end
     
+  end
+  
+  describe "does not exit from the system" do
+    
+    before do
+      DB[:permission_apps].delete
+      DB[:access_tokens].delete
+      DB[:builds].delete
+      DB[:android_apps].delete
+      DB[:users].delete
+
+      @user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
+    end
+    
+    it "when he has already exited" do      
+      post "/api/logout", {}, @header
+    
+      expect(last_response.status).to eq(401)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]["errors"]).to include("user is unauthorized")
+    end
+    
+  end
+  
+  describe "does not exit from the system" do
+    
+    before do
+      DB[:permission_apps].delete
+      DB[:access_tokens].delete
+      DB[:builds].delete
+      DB[:android_apps].delete
+      DB[:users].delete
+      
+      @user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
+    end
+    
+    it "when he has already exited" do
+      access_token = UserHelper.generate_access_token(@user.name, @user.email)
+      @user.add_access_token(access_token: access_token)
+      
+      @header["HTTP_AUTHORIZATION"] = access_token
+    
+      AccessToken.where(access_token: access_token).delete
+    
+      post "/api/logout", {}, @header
+    
+      expect(last_response.status).to eq(401)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]["errors"]).to include("user is unauthorized")
+    end
+    
+  end
+  
+  describe "exits from the system" do
+    before do
+      DB[:permission_apps].delete
+      DB[:access_tokens].delete
+      DB[:builds].delete
+      DB[:android_apps].delete
+      DB[:users].delete
+
+      @user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
+    end
+  
+    it "when he has already logged" do
+      access_token = UserHelper.generate_access_token(@user.name, @user.email)
+      @user.add_access_token(access_token: access_token)
+      
+      @header["HTTP_AUTHORIZATION"] = access_token
+    
+      post "/api/logout", {}, @header
+  
+      expect(last_response.status).to eq(200)
+
+      json_response = JSON.parse(last_response.body)
+
+      expect(json_response["response"]["user_id"]).to eq(@user.id)
+    end
   end
 
 end

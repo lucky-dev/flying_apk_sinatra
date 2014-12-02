@@ -3,7 +3,7 @@ module ApiV1
 
   module ApiHandler
     def self.handle(method, *http_header, params)
-      if ApiHelper.get_api_version(http_header[0]) == 1
+      if ApiHelper.get_api_version(http_header[0]) == API_VERSION
         # Access to resources without an access token
         if method == :register
           UserApiHandler.register(params)
@@ -11,10 +11,12 @@ module ApiV1
           UserApiHandler.login(params)
         else
           # Access to resources with an access token
-          user = User.where(access_token: http_header[1]).first
+          user = User.where(id: AccessToken.select(:user_id).where(access_token: http_header[1])).first
           if user
             # Access token is OK
-            if method == :create_android_app
+            if method == :logout
+              UserApiHandler.logout(user, http_header[1])
+            elsif method == :create_android_app
               AndroidAppApiHandler.create(user, params)
             elsif method == :get_android_apps
               AndroidAppApiHandler.get_android_apps(user)

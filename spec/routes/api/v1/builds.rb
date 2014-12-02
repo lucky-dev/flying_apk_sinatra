@@ -36,6 +36,7 @@ describe Build do
 
        before do
          DB[:permission_apps].delete
+         DB[:access_tokens].delete
          DB[:builds].delete
          DB[:android_apps].delete
          DB[:users].delete
@@ -45,8 +46,11 @@ describe Build do
          user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
          PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
+         
+         access_token = UserHelper.generate_access_token(user.name, user.email)
+         user.add_access_token(access_token: access_token)
 
-         @header["HTTP_AUTHORIZATION"] = user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          post "/api/builds?app_id=#{app.id}", { "version" => "1.0", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
 
@@ -61,8 +65,11 @@ describe Build do
          user = User.create(name: "Bob", email: "test@example.com", password: "1234567")
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
          PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ')
+         
+         access_token = UserHelper.generate_access_token(user.name, user.email)
+         user.add_access_token(access_token: access_token)
 
-         @header["HTTP_AUTHORIZATION"] = user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          post "/api/builds?app_id=#{app.id}", { "version" => "1.0", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
 
@@ -81,6 +88,7 @@ describe Build do
      
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -91,7 +99,10 @@ describe Build do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: user.id, android_app_id: app.id, permission: 'READ_WRITE')
        
-       @header["HTTP_AUTHORIZATION"] = user.access_token
+       access_token = UserHelper.generate_access_token(user.name, user.email)
+       user.add_access_token(access_token: access_token)
+       
+       @header["HTTP_AUTHORIZATION"] = access_token
      
        post "/api/builds?app_id=#{app.id}", { "version" => "1.0", "fixes" => "Some fixes", "file" => Rack::Test::UploadedFile.new(MY_APP_FILE, "application/vnd.android.package-archive") }, @header
      
@@ -108,6 +119,7 @@ describe Build do
      
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -118,12 +130,14 @@ describe Build do
      it "an authorized user" do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
        PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       access_token = UserHelper.generate_access_token(@user.name, @user.email)
+       @user.add_access_token(access_token: access_token)
        3.times do |index|
          build = Build.new(version: "#{index}.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app_#{index}.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
        end
 
-       @header["HTTP_AUTHORIZATION"] = @user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        get "/api/builds?app_id=#{app.id}", {}, @header
 
@@ -156,8 +170,10 @@ describe Build do
        end
 
        other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
+       access_token = UserHelper.generate_access_token(other_user.name, other_user.email)
+       other_user.add_access_token(access_token: access_token)
 
-       @header["HTTP_AUTHORIZATION"] = other_user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        get "/api/builds?app_id=#{app.id}", {}, @header
 
@@ -174,6 +190,7 @@ describe Build do
 
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -183,11 +200,13 @@ describe Build do
 
      it "an authorized user who has all permissions" do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
-       PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
+       PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       access_token = UserHelper.generate_access_token(@user.name, @user.email)
+       @user.add_access_token(access_token: access_token)
        build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
-       @header["HTTP_AUTHORIZATION"] = @user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        put "/api/builds/#{build.id}", { fixes: "Amazing fixes" }, @header
 
@@ -205,6 +224,7 @@ describe Build do
 
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -216,11 +236,13 @@ describe Build do
 
        it "when fixes of the build is not present" do
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
-         PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
+         PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
+         access_token = UserHelper.generate_access_token(@user.name, @user.email)
+         @user.add_access_token(access_token: access_token)
          build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
 
-         @header["HTTP_AUTHORIZATION"] = @user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          put "/api/builds/#{build.id}", { version: "1.0", fixes: "" }, @header
 
@@ -233,14 +255,16 @@ describe Build do
 
        it "when user has no permissions to this app" do
          app = AndroidApp.create(name: "My cool app", description: "Cool app")
-         PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
+         PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
          build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
          app.add_build(build)
 
          # Create an app for other user
          other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
+         access_token = UserHelper.generate_access_token(other_user.name, other_user.email)
+         other_user.add_access_token(access_token: access_token)
 
-         @header["HTTP_AUTHORIZATION"] = other_user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          put "/api/builds/#{build.id}", {}, @header
 
@@ -274,6 +298,7 @@ describe Build do
 
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -283,11 +308,13 @@ describe Build do
 
      it "an authorized user who has all permissions" do
        app = AndroidApp.create(name: "My cool app", description: "Cool app")
-       PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE') 
+       PermissionApp.create(user_id: @user.id, android_app_id: app.id, permission: 'READ_WRITE')
+       access_token = UserHelper.generate_access_token(@user.name, @user.email)
+       @user.add_access_token(access_token: access_token)
        build = Build.new(version: "1.0", fixes: "Some fixes", created_time: Time.now.utc, file_name: "my_app.apk", file_checksum: "ea6e9d41130509444421709610432ee1")
        app.add_build(build)
 
-       @header["HTTP_AUTHORIZATION"] = @user.access_token
+       @header["HTTP_AUTHORIZATION"] = access_token
 
        delete "/api/builds/#{build.id}", {}, @header
 
@@ -304,6 +331,7 @@ describe Build do
 
      before do
        DB[:permission_apps].delete
+       DB[:access_tokens].delete
        DB[:builds].delete
        DB[:android_apps].delete
        DB[:users].delete
@@ -321,8 +349,10 @@ describe Build do
          
          # Create an app for other user
          other_user = User.create(name: "Mike", email: "mike@example.com", password: "1234567")
+         access_token = UserHelper.generate_access_token(other_user.name, other_user.email)
+         other_user.add_access_token(access_token: access_token)
 
-         @header["HTTP_AUTHORIZATION"] = other_user.access_token
+         @header["HTTP_AUTHORIZATION"] = access_token
 
          delete "/api/builds/#{build.id}", {}, @header
 
