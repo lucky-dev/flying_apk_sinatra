@@ -8,7 +8,7 @@ ENV['RACK_ENV'] = 'test'
 require_relative '../app.rb'
 
 # All constants
-DB = Sequel.sqlite(FlyingApk::DATABASE_PATH)
+DB = Sequel.connect(FlyingApk::App::DATABASE_URI)
 MY_APP_FILE = File.expand_path("./spec/fixture/my_app.apk")
 
 module RSpecMixin

@@ -18,7 +18,7 @@ module ApiV1
             if BuildHelper.android_app?(filename)
               build.file_name = filename.gsub(/.*\.apk/i, "#{BuildHelper.generate_build_name(user.name, user.email)}.apk")
             
-              path_to_file = File.join(FlyingApk::FILES_DIR, build.file_name)
+              path_to_file = File.join(FlyingApk::App::FILES_DIR, build.file_name)
             
               File.open(path_to_file, 'wb') { |f| f.write(tempfile.read) }
             

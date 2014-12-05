@@ -1,0 +1,12 @@
+database:
+  test:
+    name: "flying_apk_test.db"
+  development:
+    name: "flying_apk_development.db"
+  production:
+    name: "flying_apk"
+    host: "localhost"
+    user: "root"
+    password: "1234567"
+directories:
+  apk_files: "./public/files"

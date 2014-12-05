@@ -1,15 +1,36 @@
 require 'sinatra/base'
 require 'sequel'
+require 'yaml'
 
 module FlyingApk
-  DATABASE_PATH = File.expand_path("./db/flying_apk#{ENV['RACK_ENV'] == 'test' ? '_test' : '' }.db")
-  FILES_DIR = File.expand_path("./public/files")
-
   class App < Sinatra::Base
+    SETTINGS = YAML.load_file("config.yml")
+    
+    configure :test do
+      DATABASE_PATH = File.expand_path("./db/#{SETTINGS["database"]["test"]["name"]}")
+      DATABASE_URI = "sqlite://#{DATABASE_PATH}"
+    end
+
+    configure :development do
+      DATABASE_PATH = File.expand_path("./db/#{SETTINGS["database"]["development"]["name"]}")
+      DATABASE_URI = "sqlite://#{DATABASE_PATH}"
+    end
+    
+    configure :production do
+      name = SETTINGS["database"]["production"]["name"]
+      host = SETTINGS["database"]["production"]["host"]
+      user = SETTINGS["database"]["production"]["user"]
+      password = SETTINGS["database"]["production"]["password"]
+
+      DATABASE_URI = "mysql://#{user}:#{password}@#{host}/#{name}"
+    end
+
     configure do
-      set :public_folder, FILES_DIR
+      FILES_DIR = File.expand_path(SETTINGS["Directories"]["apk_files"])
       
-      Sequel.sqlite(DATABASE_PATH)
+      Sequel.connect(DATABASE_URI)
+      
+      set :public_folder, FILES_DIR
 
       # Include all models, helpers and routes      
       require_relative 'app/helpers/init.rb'

@@ -1,36 +1,49 @@
 namespace :db do
   desc "Run migrations"
 
-  # Helper methods
-  def run_migration
-    require_relative 'app'
-    Sequel.extension :migration
-    puts "Migrating to latest"
-    Sequel::Migrator.run(Sequel.sqlite(FlyingApk::DATABASE_PATH), "db/migrations")
-  end
-  ###
-
-  task :migrate do
-    run_migration
-  end
-
-  task :delete_all do
-    require_relative 'app'
-    File.delete(FlyingApk::DATABASE_PATH)
-  end
-
   namespace :migrate do
+    def run_migration
+      Sequel.extension :migration
+      Sequel::Migrator.run(Sequel.connect(FlyingApk::App::DATABASE_URI), "db/migrations")
+    end
+    
     task :test do
       ENV['RACK_ENV'] = 'test'
+      require_relative 'app'
+      run_migration
+    end
+
+    task :development do
+      ENV['RACK_ENV'] = 'development'
+      require_relative 'app'
+      run_migration
+    end
+
+    task :production do
+      ENV['RACK_ENV'] = 'production'
+      require_relative 'app'
       run_migration
     end
   end
 
-  namespace :delete_all do
+  namespace :delete do
     task :test do
       ENV['RACK_ENV'] = 'test'
       require_relative 'app'
-      File.delete(FlyingApk::DATABASE_PATH)
+      File.delete(FlyingApk::App::DATABASE_PATH)
+    end
+    
+    task :development do
+      ENV['RACK_ENV'] = 'development'
+      require_relative 'app'
+      File.delete(FlyingApk::App::DATABASE_PATH)
+    end
+    
+    task :production do
+      ENV['RACK_ENV'] = 'production'
+      require_relative 'app'
+      DB = Sequel.connect(FlyingApk::App::DATABASE_URI)
+      DB.run "DROP DATABASE flying_apk"
     end
   end
 end

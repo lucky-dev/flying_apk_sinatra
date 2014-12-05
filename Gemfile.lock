@@ -5,6 +5,7 @@ GEM
     diff-lcs (1.2.5)
     json (1.7.7)
     method_source (0.8.2)
+    mysql (2.9.1)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -42,6 +43,7 @@ PLATFORMS
 
 DEPENDENCIES
   json
+  mysql
   pry
   pry-nav
   rack-test
