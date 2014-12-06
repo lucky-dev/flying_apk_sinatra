@@ -26,7 +26,7 @@ module FlyingApk
     end
 
     configure do
-      FILES_DIR = File.expand_path(SETTINGS["Directories"]["apk_files"])
+      FILES_DIR = File.expand_path(SETTINGS["directories"]["apk_files"])
       
       Sequel.connect(DATABASE_URI)
       

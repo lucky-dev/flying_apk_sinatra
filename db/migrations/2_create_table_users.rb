@@ -5,7 +5,7 @@ Sequel.migration do
       String :name, :null => false, :size => 50
       String :email, :null => false, :unique => true
       String :encoded_password, :null => false
-      String :access_token, :null => false, :default => ''
+      String :session_token, :null => false, :default => ''
     end
   end
 end

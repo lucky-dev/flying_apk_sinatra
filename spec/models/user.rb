@@ -10,7 +10,7 @@ describe User do
     expect(@user).to respond_to(:email)
     expect(@user).to respond_to(:password)
     expect(@user).to respond_to(:encoded_password)
-    expect(@user).to respond_to(:access_token)
+    expect(@user).to respond_to(:session_token)
     expect(@user).to respond_to(:permission_apps)
   end
 
