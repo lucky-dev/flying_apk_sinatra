@@ -1,20 +1,30 @@
 # FlyingApk
+
 FlyingApk is a clone of Testflight and only supports sharing of Android applications. FlyingApk doesn't have UI yet. It has only API and [Android client](https://github.com/lucky-dev/flying_apk_android).
+
 ## Install
+
 1. `git clone https://github.com/lucky-dev/flying_apk_sinatra.git`
 2. Install [Bundler](http://bundler.io/) `gem install bundler`
 3. Go to the root directory of FlyingApk (where the file *Gemfile* is) and download all dependencies `bundle install`
+
 ## Using
+
 ### Development
+
 1. Migrate database `rake db:migrate:development`
 2. Start web server `rackup -p 8080`
+
 ## Test
+
 1. Migrate database `rake db:migrate:test`
 2. Run tests
 	* For all routes `rspec -P ./spec/routes/**/*.rb`
 	* For all models `rspec ./spec/models/*`
 	* For all helpers `rspec ./spec/helpers/*`
+
 ## Production
+
 1. Run MySQL server
 2. Go to the MySQL console `mysql -h host -u root -p`
 3. Create database `CREATE DATABASE flying_apk;`
@@ -22,7 +32,9 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 5. In section `database -> production` change values of `host, user, password`
 6. Run command `rake db:migrate:production`
 7. Start web server `rackup --env production -p 8080`
+
 ### Other options
+
 * Delete all files in the directory *public/files* `rake apk:delete`
 * Delete databases
 	* `db:delete:test`
