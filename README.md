@@ -1,6 +1,6 @@
 # FlyingApk
 
-FlyingApk is a clone of Testflight and only supports sharing of Android applications. FlyingApk doesn't have UI yet. It has only API and [Android client](https://github.com/lucky-dev/flying_apk_android).
+FlyingApk is a clone of Testflight and only supports sharing of Android applications. FlyingApk hasn't had UI yet. It has only API and [Android client](https://github.com/lucky-dev/flying_apk_android).
 
 ## Install
 
@@ -36,7 +36,41 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 ### Other options
 
 * Delete all files in the directory *public/files* `rake apk:delete`
-* Delete databases
+* Delete database
 	* `db:delete:test`
 	* `db:delete:development`
 	* `db:delete:production` *(Note: After deleting of the database `flying_apk`, you must create a new database manually through the command `CREATE DATABASE flying_apk;` in MySQL console. The command `rake db:migrate:production` doesn't create MySQL database automatically)*
+
+## API
+
+### User
+
+#### Register
+
+#### Login
+
+#### Logout
+
+### Android app
+
+#### Create an app
+
+#### Get list of apps
+
+#### Update an app
+
+#### Delete an app
+
+#### Add an user to the app
+
+#### Remove an user from the app
+
+### Build
+
+#### Create a build
+
+#### Get list of builds
+
+#### Update a build
+
+#### Delete a build
