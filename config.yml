@@ -9,4 +9,4 @@ database:
     user: "root"
     password: "1234567"
 directories:
-  apk_files: "./public/files"
+  apk_files: "./public"
