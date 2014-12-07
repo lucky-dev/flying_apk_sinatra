@@ -2,10 +2,16 @@ source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'sequel'
-gem 'sqlite3'
-gem 'mysql'
-gem 'rspec'
-gem 'rack-test'
-gem 'pry'
 gem 'json'
-gem 'pry-nav'
+
+group :production do
+  gem 'mysql'
+end
+
+group :development, :test do
+  gem 'sqlite3'
+  gem 'rspec'
+  gem 'rack-test'
+  gem 'pry'
+  gem 'pry-nav'
+end

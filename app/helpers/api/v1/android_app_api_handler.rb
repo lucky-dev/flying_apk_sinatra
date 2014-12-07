@@ -64,8 +64,6 @@ module ApiV1
   
     def self.delete_android_app(user, params)
       id = params[:id]
-      name = params[:name]
-      description = params[:description]
     
       permission_for_app = user.permission_apps_dataset.where(android_app_id: id, permission: 'READ_WRITE').first
       if permission_for_app

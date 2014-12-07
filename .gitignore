@@ -2,3 +2,4 @@
 .DS_Store
 *.apk
 unicorn.rb
+.idea
