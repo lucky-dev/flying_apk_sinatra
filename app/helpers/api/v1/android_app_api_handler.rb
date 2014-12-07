@@ -8,7 +8,7 @@ module ApiV1
       if android_app.valid?
         android_app.save
       
-        permission = PermissionApp.create(user_id: user.id, android_app_id: android_app.id, permission: 'READ_WRITE')
+        PermissionApp.create(user_id: user.id, android_app_id: android_app.id, permission: 'READ_WRITE')
       
         return ApiHelper.response(200) do
           { api_version: API_VERSION, response: { android_app: { id: android_app.id, name: android_app.name, description: android_app.description } } }

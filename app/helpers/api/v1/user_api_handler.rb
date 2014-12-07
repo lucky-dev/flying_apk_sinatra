@@ -46,10 +46,9 @@ module ApiV1
     end
     
     def self.logout(user, access_token)
-      user_id = user.id
       user.access_tokens_dataset.where(access_token: access_token).delete
       return ApiHelper.response(200) do
-        { api_version: API_VERSION, response: { user_id: user_id } }
+        { api_version: API_VERSION, response: { user_id: user.id } }
       end
     end
   end
