@@ -111,6 +111,9 @@ describe Build do
        json_response = JSON.parse(last_response.body)
 
        expect(json_response["response"]).to include("build")
+
+       path_to_file = File.join(FlyingApk::App::FILES_DIR, json_response["response"]["build"]["file_name"])
+       expect(File.exist?(path_to_file)).to be(true)
      end
      
    end

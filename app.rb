@@ -26,11 +26,12 @@ module FlyingApk
     end
 
     configure do
+      PUBLIC_DIR = File.expand_path(SETTINGS["directories"]["public"])
       FILES_DIR = File.expand_path(SETTINGS["directories"]["apk_files"])
       
       Sequel.connect(DATABASE_URI)
       
-      set :public_folder, FILES_DIR
+      set :public_folder, PUBLIC_DIR
 
       # Include all models, helpers and routes      
       require_relative 'app/helpers/init.rb'
