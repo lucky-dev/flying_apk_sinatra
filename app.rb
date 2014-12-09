@@ -9,11 +9,13 @@ module FlyingApk
     configure :test do
       DATABASE_PATH = File.expand_path("./db/#{SETTINGS["database"]["test"]["name"]}")
       DATABASE_URI = "sqlite://#{DATABASE_PATH}"
+      PASSWORD_SALT = SETTINGS["security"]["test"]["password_salt"]
     end
 
     configure :development do
       DATABASE_PATH = File.expand_path("./db/#{SETTINGS["database"]["development"]["name"]}")
       DATABASE_URI = "sqlite://#{DATABASE_PATH}"
+      PASSWORD_SALT = SETTINGS["security"]["development"]["password_salt"]
     end
     
     configure :production do
@@ -23,6 +25,7 @@ module FlyingApk
       password = SETTINGS["database"]["production"]["password"]
 
       DATABASE_URI = "mysql://#{user}:#{password}@#{host}/#{name}"
+      PASSWORD_SALT = SETTINGS["security"]["production"]["password_salt"]
     end
 
     configure do

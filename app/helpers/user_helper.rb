@@ -1,14 +1,12 @@
 require 'digest/md5'
 
 module UserHelper
-  COOL_SALT = "IknowThatIKnowNothing"
-
   def self.salt_password(password)
-    Digest::MD5.hexdigest("#{password}#{COOL_SALT}")
+    Digest::MD5.hexdigest("#{password}#{FlyingApk::App::PASSWORD_SALT}")
   end
   
   def self.equal_passwords?(original_password, encoded_password)
-    Digest::MD5.hexdigest("#{original_password}#{COOL_SALT}") == encoded_password
+    Digest::MD5.hexdigest("#{original_password}#{FlyingApk::App::PASSWORD_SALT}") == encoded_password
   end
   
   def self.generate_access_token(user_name, user_email)

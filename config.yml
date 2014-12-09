@@ -11,3 +11,11 @@ database:
 directories:
   public: "./public"
   apk_files: "./public/files"
+security:
+  test:
+    password_salt: "IknowThatIKnowNothing"
+  development:
+    password_salt: "IknowThatIKnowNothing"
+  production:
+    # Here, value of password_salt must be changed
+    password_salt: "IknowThatIKnowNothing"

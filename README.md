@@ -32,6 +32,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 5. In section `database -> production` change values of `host, user, password`
 6. Run command `rake db:migrate:production`
 7. Start web server `rackup --env production -p 8080`
+**8. In the file *config.yml* Change value of `security -> production -> password_salt` from `IknowThatIKnowNothing` to another value (phrase, word and etc).**
 
 ### Other options
 
