@@ -79,7 +79,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `POST`
 * Path: `api/android_apps`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: none
+* Params: name, description
 * Examples:
     * Request: `curl -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -d "name=\"Cool app\"&description=\"My cool app\"" http://localhost:8080/api/android_apps`
     * Response: ```{"api_version":1,"response":{"android_app":{"id":1,"name":"\"Cool app\"","description":"\"My cool app\""}}}```
@@ -97,7 +97,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `PUT`
 * Path: `api/android_apps/:id`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: none
+* Params: name or/and description
 * Examples:
     * Request: `curl -X PUT -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -d "description=\"New description\"" http://localhost:8080/api/android_apps/1`
     * Response: ```{"api_version":1,"response":{"app":{"name":"\"Cool app\"","description":"\"New description\""}}}```
@@ -115,7 +115,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `POST`
 * Path: `api/android_apps/:id/add_user`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: none
+* Params: email
 * Examples:
     * Request: `curl -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -d "email=max@gmail.com" http://localhost:8080/api/android_apps/2/add_user`
     * Response: ```{"api_version":1,"response":{"permission":{"user_id":2}}}```
@@ -124,7 +124,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `POST`
 * Path: `api/android_apps/:id/remove_user`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: none
+* Params: email
 * Examples:
     * Request: `curl -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -d "email=max@gmail.com" http://localhost:8080/api/android_apps/2/remove_user`
     * Response: ```{"api_version":1,"response":{"permission":{"user_id":2}}}```
@@ -135,7 +135,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `POST`
 * Path: `api/builds`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: none
+* Params: version, fixes, file
 * Examples:
     * Request: `curl -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -F "version=1.0" -F "fixes=\"All bugs were fixed\"" -F "file=@/Users/vladimir/Documents/rails_projects/flying_apk/spec/fixture/my_app.apk" http://localhost:8080/api/builds?app_id=2`
     * Response: ```{"api_version":1,"response":{"build":{"id":1,"version":"1.0","fixes":"\"All bugs were fixed\"","created_time":"2014-12-09 11:50:29 +0200","file_name":"f8d3c10a4a63a14175c77a50ad5955b6.apk","file_checksum":"ea6e9d41130509444421709610432ee1"}}}```
@@ -153,7 +153,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `PUT`
 * Path: `api/builds/:id`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: none
+* Params: version or/and fixes
 * Examples:
     * Request: `curl -X PUT -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -d "fixes=\"New fixes\"" http://localhost:8080/api/builds/1`
     * Response: ```{"api_version":1,"response":{"build":{"id":1,"version":"1.0","fixes":"\"New fixes\""}}}```
