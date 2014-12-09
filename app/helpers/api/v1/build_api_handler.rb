@@ -1,5 +1,5 @@
 module ApiV1
-  module BuildApiHandler    
+  module BuildApiHandler
     def self.create_build(user, params)
       version = params[:version]
       fixes = params[:fixes]
