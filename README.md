@@ -41,6 +41,12 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 	* `db:delete:test`
 	* `db:delete:development`
 	* `db:delete:production` *(Note: After deleting of the database `flying_apk`, you must create a new database manually through the command `CREATE DATABASE flying_apk;` in MySQL console. The command `rake db:migrate:production` doesn't create MySQL database automatically)*
+* Put a new version of the [Android client](https://github.com/lucky-dev/flying_apk_android) in the directory `./public/upd_app`. Your users get a new version of the app.
+    * `checksum_file`: hash of the file
+    * `file`: apk file (new version)
+    * `version_app`: version (code, e.g. 1, 2, 3, ...) of the app
+    * `version_name_app`: version (name, e.g. "1.0", "1.1", "1.2", ...) of the app
+    * `whats_new`: new features of the app
 
 ## API
 
