@@ -4,42 +4,54 @@ require 'yaml'
 
 module FlyingApk
   class App < Sinatra::Base
-    SETTINGS = YAML.load_file("config.yml")
+    SETTINGS = YAML.load_file('./config/flying_apk.yml')
     
     configure :test do
-      DATABASE_PATH = File.expand_path("./db/#{SETTINGS["database"]["test"]["name"]}")
+      DATABASE_PATH = File.expand_path("./db/#{SETTINGS['database']['test']['name']}")
       DATABASE_URI = "sqlite://#{DATABASE_PATH}"
-      PASSWORD_SALT = SETTINGS["security"]["test"]["password_salt"]
+      PASSWORD_SALT = SETTINGS['security']['test']['password_salt']
     end
 
     configure :development do
-      DATABASE_PATH = File.expand_path("./db/#{SETTINGS["database"]["development"]["name"]}")
+      DATABASE_PATH = File.expand_path("./db/#{SETTINGS['database']['development']['name']}")
       DATABASE_URI = "sqlite://#{DATABASE_PATH}"
-      PASSWORD_SALT = SETTINGS["security"]["development"]["password_salt"]
+      PASSWORD_SALT = SETTINGS['security']['development']['password_salt']
     end
     
     configure :production do
-      name = SETTINGS["database"]["production"]["name"]
-      host = SETTINGS["database"]["production"]["host"]
-      user = SETTINGS["database"]["production"]["user"]
-      password = SETTINGS["database"]["production"]["password"]
+      name = SETTINGS['database']['production']['name']
+      host = SETTINGS['database']['production']['host']
+      user = SETTINGS['database']['production']['user']
+      password = SETTINGS['database']['production']['password']
 
       DATABASE_URI = "mysql://#{user}:#{password}@#{host}/#{name}"
-      PASSWORD_SALT = SETTINGS["security"]["production"]["password_salt"]
+      PASSWORD_SALT = SETTINGS['security']['production']['password_salt']
     end
 
     configure do
-      PUBLIC_DIR = File.expand_path(SETTINGS["directories"]["public"])
-      FILES_DIR = File.expand_path(SETTINGS["directories"]["apk_files"])
-      
+      PUBLIC_DIR = File.expand_path(SETTINGS['directories']['public'])
+      FILES_DIR = File.expand_path(SETTINGS['directories']['apk_files'])
+
       Sequel.connect(DATABASE_URI)
       
       set :public_folder, PUBLIC_DIR
 
-      # Include all models, helpers and routes      
+      # Get mail settings
+      SMTP_SETTINGS = { address: SETTINGS['mail']['smtp']['address'],
+                        port: SETTINGS['mail']['smtp']['port'],
+                        user_name: SETTINGS['mail']['smtp']['user_name'],
+                        password: SETTINGS['mail']['smtp']['password'],
+                        authentication: 'plain',
+                        enable_starttls_auto: true,
+                        tls: true }
+
+      MAIL_SENDER = SETTINGS['mail']['sender']
+
+      # Include all models, helpers, routes and workers
       require_relative 'app/helpers/init.rb'
       require_relative 'app/models/init.rb'
       require_relative 'app/routes/init.rb'
+      require_relative 'app/workers/init'
     end
 
     use Routes::Users

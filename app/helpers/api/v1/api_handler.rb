@@ -40,13 +40,13 @@ module ApiV1
           else
             # Access token is BAD
             return ApiHelper.response(401) do
-              { api_version: API_VERSION, response: { errors: [ "user is unauthorized" ] } }
+              { api_version: API_VERSION, response: { errors: [ 'user is unauthorized' ] } }
             end
           end
         end
       else
         return ApiHelper.response(406) do
-          { api_version: API_VERSION, response: { errors: [ "bad header" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'bad header' ] } }
         end
       end
     end

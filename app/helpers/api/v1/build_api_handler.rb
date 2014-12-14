@@ -27,6 +27,8 @@ module ApiV1
               build.android_app_id = app_id
             
               build.save
+
+              MailNotification.perform_async(:add_new_build, app_id, build.id)
             
               return ApiHelper.response(200) do
                  { api_version: API_VERSION, response: { build: { id: build.id, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum } } }
@@ -34,7 +36,7 @@ module ApiV1
             end
           else
             return ApiHelper.response(500) do
-              { api_version: API_VERSION, response: { errors: [ "file was not uploaded" ] } }
+              { api_version: API_VERSION, response: { errors: [ 'file was not uploaded' ] } }
             end
           end
         else
@@ -44,7 +46,7 @@ module ApiV1
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end
@@ -66,7 +68,7 @@ module ApiV1
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end
@@ -95,7 +97,7 @@ module ApiV1
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end
@@ -115,7 +117,7 @@ module ApiV1
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end

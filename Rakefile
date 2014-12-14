@@ -1,10 +1,10 @@
 namespace :db do
-  desc "Run migrations"
+  desc 'Run migrations'
 
   namespace :migrate do
     def run_migration
       Sequel.extension :migration
-      Sequel::Migrator.run(Sequel.connect(FlyingApk::App::DATABASE_URI), "db/migrations")
+      Sequel::Migrator.run(Sequel.connect(FlyingApk::App::DATABASE_URI), 'db/migrations')
     end
     
     task :test do
@@ -43,7 +43,7 @@ namespace :db do
       ENV['RACK_ENV'] = 'production'
       require_relative 'app'
       DB = Sequel.connect(FlyingApk::App::DATABASE_URI)
-      DB.run "DROP DATABASE flying_apk"
+      DB.run 'DROP DATABASE flying_apk'
     end
   end
 end

@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 gem 'sinatra'
 gem 'sequel'
 gem 'json'
+gem 'sidekiq'
+gem 'mail'
 
 group :production do
   gem 'mysql'

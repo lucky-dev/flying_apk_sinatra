@@ -19,3 +19,10 @@ security:
   production:
     # Here, value of password_salt must be changed
     password_salt: "IknowThatIKnowNothing"
+mail:
+  smtp:
+    address: "smtp.example.com"
+    port: 465
+    user_name: "user@example.com"
+    password: "1234567"
+  sender: "user@example.com"

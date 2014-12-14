@@ -5,7 +5,7 @@ module BuildHelper
   
   def self.android_app?(file_name)
     file_info = file_name.match(VALID_ANDROID_APP_REGEX)
-    file_info ? file_info.captures[1] == "apk" : false
+    file_info ? file_info.captures[1] == 'apk' : false
   end
   
   def self.generate_build_name(user_name, user_email)

@@ -9,7 +9,7 @@ require_relative '../app.rb'
 
 # All constants
 DB = Sequel.connect(FlyingApk::App::DATABASE_URI)
-MY_APP_FILE = File.expand_path("./spec/fixture/my_app.apk")
+MY_APP_FILE = File.expand_path('./spec/fixture/my_app.apk')
 
 module RSpecMixin
   include Rack::Test::Methods

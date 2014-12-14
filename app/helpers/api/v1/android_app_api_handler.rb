@@ -57,7 +57,7 @@ module ApiV1
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end
@@ -81,7 +81,7 @@ module ApiV1
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end
@@ -100,27 +100,30 @@ module ApiV1
         
             unless existing_permission_new_user
               permission = PermissionApp.create(user_id: new_user.id, android_app_id: app_id, permission: 'READ')
+
+              MailNotification.perform_async(:add_user_to_app, email, app_id)
+
               return ApiHelper.response(200) do
                 { api_version: API_VERSION, response: { permission: { user_id: permission.user_id } } }
               end
             else
               return ApiHelper.response(500) do
-                { api_version: API_VERSION, response: { errors: [ "the permission exists" ] } }
+                { api_version: API_VERSION, response: { errors: [ 'the permission exists' ] } }
               end
             end
           else
             return ApiHelper.response(500) do
-              { api_version: API_VERSION, response: { errors: [ "email is not exist" ] } }
+              { api_version: API_VERSION, response: { errors: [ 'email is not exist' ] } }
             end
           end
         else
           return ApiHelper.response(500) do
-            { api_version: API_VERSION, response: { errors: [ "this email can't be used" ] } }
+            { api_version: API_VERSION, response: { errors: [ 'this email can not be used' ] } }
           end
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end
@@ -138,27 +141,30 @@ module ApiV1
             existing_permission_new_user = new_user.permission_apps_dataset.where(android_app_id: app_id).first
             if existing_permission_new_user
               existing_permission_new_user.delete
+
+              MailNotification.perform_async(:remove_user_from_app, email, app_id)
+
               return ApiHelper.response(200) do
                 { api_version: API_VERSION, response: { permission: { user_id: new_user.id } } }
               end
             else
               return ApiHelper.response(500) do
-                { api_version: API_VERSION, response: { errors: [ "the permission is not exist" ] } }
+                { api_version: API_VERSION, response: { errors: [ 'the permission is not exist' ] } }
               end
             end
           else
             return ApiHelper.response(500) do
-              { api_version: API_VERSION, response: { errors: [ "email is not exist" ] } }
+              { api_version: API_VERSION, response: { errors: [ 'email is not exist' ] } }
             end
           end
         else
           return ApiHelper.response(500) do
-            { api_version: API_VERSION, response: { errors: [ "this email can't be used" ] } }
+            { api_version: API_VERSION, response: { errors: [ 'this email can not be used' ] } }
           end
         end
       else
         return ApiHelper.response(403) do
-          { api_version: API_VERSION, response: { errors: [ "you don't have permission to this resource" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'you do not have permission to this resource' ] } }
         end
       end
     end

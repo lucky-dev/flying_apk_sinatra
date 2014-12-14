@@ -28,11 +28,11 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 1. Run MySQL server
 2. Go to the MySQL console `mysql -h host -u root -p`
 3. Create database `CREATE DATABASE flying_apk;`
-4. Open file *config.yml*
+4. Open file *./config/flying_apk.yml*
 5. In section `database -> production` change values of `host, user, password`
 6. Run command `rake db:migrate:production`
 7. Start web server `rackup --env production -p 8080`
-8. **In the file *config.yml* Change value of `security -> production -> password_salt` from `IknowThatIKnowNothing` to another value (phrase, word and etc).**
+8. **In the file *./config/flying_apk.yml* Change value of `security -> production -> password_salt` from `IknowThatIKnowNothing` to another value (phrase, word and etc)**
 
 ### Other options
 
@@ -41,12 +41,23 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 	* `db:delete:test`
 	* `db:delete:development`
 	* `db:delete:production` *(Note: After deleting of the database `flying_apk`, you must create a new database manually through the command `CREATE DATABASE flying_apk;` in MySQL console. The command `rake db:migrate:production` doesn't create MySQL database automatically)*
-* Put a new version of the [Android client](https://github.com/lucky-dev/flying_apk_android) in the directory `./public/upd_app`. Your users get a new version of the app.
+* Put a new version of the [Android client](https://github.com/lucky-dev/flying_apk_android) in the directory `./public/upd_app`. Users get a new version of the app
     * `checksum_file`: hash of the file
     * `file`: apk file (new version)
     * `version_app`: version (code, e.g. 1, 2, 3, ...) of the app
     * `version_name_app`: version (name, e.g. "1.0", "1.1", "1.2", ...) of the app
     * `whats_new`: new features of the app
+* You can send notifications to users. You need to set settings for SMTP server:
+    * Install [Redis](http://redis.io/download)
+    * In the file `./config/flying_apk.yml` set value for the block `mail`
+        * `smtp`
+            * `address`: must be address of SMTP server (e.g. smtp.mail.yahoo.com)
+            * `port`:  must be address of SMTP server
+            * `user_name`: your login (e.g. "user@yahoo.com")
+            * `password`: your password
+        * `sender`: your email for mailing of notifications (e.g. "user@yahoo.com")
+    * Run Redis `redis-server /<path_to_redis_conf>/redis.conf`
+    * Run [Sidekiq](https://github.com/mperham/sidekiq) `sidekiq -C ./config/sidekiq.yml -r ./app.rb -e production -d` ([more about Sidekiq](https://github.com/mperham/sidekiq/wiki/))
 
 ## API
 

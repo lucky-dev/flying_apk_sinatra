@@ -35,12 +35,12 @@ module ApiV1
           end
         else
           return ApiHelper.response(500) do
-            { api_version: API_VERSION, response: { errors: [ "password is wrong" ] } }
+            { api_version: API_VERSION, response: { errors: [ 'password is wrong' ] } }
           end
         end
       else
         return ApiHelper.response(500) do
-          { api_version: API_VERSION, response: { errors: [ "email is not found" ] } }
+          { api_version: API_VERSION, response: { errors: [ 'email is not found' ] } }
         end
       end
     end
