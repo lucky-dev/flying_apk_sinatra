@@ -31,8 +31,8 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 4. Open file *./config/flying_apk.yml*
 5. In section `database -> production` change values of `host, user, password`
 6. Run command `rake db:migrate:production`
-7. Start web server `rackup --env production -p 8080`
-8. **In the file *./config/flying_apk.yml* Change value of `security -> production -> password_salt` from `IknowThatIKnowNothing` to another value (phrase, word and etc)**
+7. In the file *./config/flying_apk.yml* Change value of `security -> production -> password_salt` from `IknowThatIKnowNothing` to another value (phrase, word and etc)
+8. Start web server `rackup --env production -p 8080`
 
 ### Other options
 
@@ -49,15 +49,15 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
     * `whats_new`: new features of the app
 * You can send notifications to users. You need to set settings for SMTP server:
     * Install [Redis](http://redis.io/download)
-    * In the file `./config/flying_apk.yml` set value for the block `mail`
+    * In the file `./config/flying_apk.yml` set values for the block `mail`
         * `smtp`
-            * `address`: must be address of SMTP server (e.g. smtp.mail.yahoo.com)
-            * `port`:  must be address of SMTP server
+            * `address`: must be an address of SMTP server (e.g. smtp.mail.yahoo.com)
+            * `port`:  must be a port of SMTP server (e.g. 465)
             * `user_name`: your login (e.g. "user@yahoo.com")
             * `password`: your password
         * `sender`: your email for mailing of notifications (e.g. "user@yahoo.com")
     * Run Redis `redis-server /<path_to_redis_conf>/redis.conf`
-    * Run [Sidekiq](https://github.com/mperham/sidekiq) `sidekiq -C ./config/sidekiq.yml -r ./app.rb -e production -d` ([more about Sidekiq](https://github.com/mperham/sidekiq/wiki/))
+    * Run [Sidekiq](https://github.com/mperham/sidekiq) `sidekiq -C ./config/sidekiq.yml -r ./app.rb -e production -d` ([Sidekiq wiki](https://github.com/mperham/sidekiq/wiki/))
 
 ## API
 
