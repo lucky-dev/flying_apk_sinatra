@@ -5,6 +5,7 @@ gem 'sequel'
 gem 'json'
 gem 'sidekiq'
 gem 'mail'
+gem 'sinatra-contrib'
 
 group :production do
   gem 'mysql'

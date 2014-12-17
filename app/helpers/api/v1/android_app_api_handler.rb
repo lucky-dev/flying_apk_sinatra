@@ -101,7 +101,7 @@ module ApiV1
             unless existing_permission_new_user
               permission = PermissionApp.create(user_id: new_user.id, android_app_id: app_id, permission: 'READ')
 
-              MailNotification.perform_async(:add_user_to_app, email, app_id)
+              MailNotificationHelper.perform_async(:add_user_to_app, email, app_id)
 
               return ApiHelper.response(200) do
                 { api_version: API_VERSION, response: { permission: { user_id: permission.user_id } } }
@@ -142,7 +142,7 @@ module ApiV1
             if existing_permission_new_user
               existing_permission_new_user.delete
 
-              MailNotification.perform_async(:remove_user_from_app, email, app_id)
+              MailNotificationHelper.perform_async(:remove_user_from_app, email, app_id)
 
               return ApiHelper.response(200) do
                 { api_version: API_VERSION, response: { permission: { user_id: new_user.id } } }

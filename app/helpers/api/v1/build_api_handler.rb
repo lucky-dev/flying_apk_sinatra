@@ -28,7 +28,7 @@ module ApiV1
             
               build.save
 
-              MailNotification.perform_async(:add_new_build, app_id, build.id)
+              MailNotificationHelper.perform_async(:add_new_build, app_id, build.id)
             
               return ApiHelper.response(200) do
                  { api_version: API_VERSION, response: { build: { id: build.id, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum } } }

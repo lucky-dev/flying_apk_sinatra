@@ -25,4 +25,7 @@ mail:
     port: 465
     user_name: "user@example.com"
     password: "1234567"
+    authentication: "plain"
+    enable_starttls_auto: true
+    tls: true
   sender: "user@example.com"
