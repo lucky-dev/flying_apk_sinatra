@@ -3,12 +3,13 @@ module ApiV1
     def self.create_build(user, params)
       version = params[:version]
       fixes = params[:fixes]
+      type = params[:type]
       app_id = params[:app_id]
       file = params[:file]
     
       permission_for_app = user.permission_apps_dataset.where(android_app_id: app_id, permission: 'READ_WRITE').first
       if permission_for_app
-        build = Build.new(version: version, fixes: fixes)
+        build = Build.new(version: version, fixes: fixes, type: type)
       
         if build.valid?
           if file
@@ -57,14 +58,16 @@ module ApiV1
     
     def self.get_builds(user, params)
       app_id = params[:app_id]
+      type = params[:type]
     
       permission_for_app = user.permission_apps_dataset.where(android_app_id: app_id).first
       if permission_for_app
-        all_builds = Build.where(android_app_id: app_id).reverse_order(:created_time).all
+        query_get_builds = ((type == 'debug') || (type == 'release')) ? Build.where(android_app_id: app_id, type: type) : Build.where(android_app_id: app_id)
+        all_builds = query_get_builds.reverse_order(:created_time).all
 
         builds = []
         all_builds.each do |build|
-          builds << { id: build.id, name: build.name, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum }
+          builds << { id: build.id, name: build.name, version: build.version, fixes: build.fixes, type: build.type, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum }
         end
 
         return ApiHelper.response(200) do
@@ -81,6 +84,7 @@ module ApiV1
       id = params[:id]
       version = params[:version]
       fixes = params[:fixes]
+      type = params[:type]
     
       build = Build.where(id: id).first
 
@@ -88,11 +92,12 @@ module ApiV1
       if permission_for_app
         build.version = version || build.version
         build.fixes = fixes || build.fixes
+        build.type = type || build.type
       
         if build.valid?
           build.save
           return ApiHelper.response(200) do
-            { api_version: API_VERSION, response: { build: { id: build.id, name: build.name, version: build.version, fixes: build.fixes } } }
+            { api_version: API_VERSION, response: { build: { id: build.id, name: build.name, version: build.version, fixes: build.fixes, type: build.type, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum } } }
           end
         else
           return ApiHelper.response(500) do
