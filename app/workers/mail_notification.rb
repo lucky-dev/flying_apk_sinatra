@@ -22,10 +22,10 @@ class MailNotification
       Mail.deliver do
         to emails
         from FlyingApk::App::MAIL_SENDER
-        subject "FlyingApk - #{app_name} [Build ##{build.id}]"
+        subject "FlyingApk - #{app_name} [#{build.name}]"
         html_part do
           content_type 'text/html; charset=UTF-8'
-          body "<body>A new build of #{app_name} app was uploaded. You can #{MailNotificationHelper.link_for_build(app_id, app_name, 'download this build')}.</body>"
+          body "<body>A new build of #{app_name} app was uploaded. You can #{MailNotificationHelper.link_for_build(app_id, app_name, build.type, 'download this build')}.</body>"
         end
         delivery_method :smtp, FlyingApk::App::SMTP_SETTINGS
       end

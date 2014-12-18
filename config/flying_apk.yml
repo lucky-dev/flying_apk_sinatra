@@ -27,5 +27,5 @@ mail:
     password: "1234567"
     authentication: "plain"
     enable_starttls_auto: true
-    tls: true
+    tls: false
   sender: "user@example.com"
