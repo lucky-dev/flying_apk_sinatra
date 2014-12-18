@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Build do
   before do
-    @build = Build.new(version: '1.0', fixes: 'Some fixes', created_time: Time.now.utc, file_name: 'my_app.apk', file_checksum: 'ea6e9d41130509444421709610432ee1')
+    @build = Build.new(name: 'Build #1', version: '1.0', fixes: 'Some fixes', created_time: Time.now.utc, file_name: 'my_app.apk', file_checksum: 'ea6e9d41130509444421709610432ee1')
   end
 
   it 'responds to methods' do
+    expect(@build).to respond_to(:name)
     expect(@build).to respond_to(:version)
     expect(@build).to respond_to(:fixes)
     expect(@build).to respond_to(:created_time)

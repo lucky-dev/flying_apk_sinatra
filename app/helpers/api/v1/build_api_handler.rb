@@ -21,7 +21,11 @@ module ApiV1
               path_to_file = File.join(FlyingApk::App::FILES_DIR, build.file_name)
             
               File.open(path_to_file, 'wb') { |f| f.write(tempfile.read) }
-            
+
+              # Get number of builds for certain app
+              count_builds = Build.where(android_app_id: app_id).count
+
+              build.name = "Build ##{count_builds + 1}"
               build.file_checksum = BuildHelper.get_build_hash(path_to_file)
               build.created_time = Time.now.utc
               build.android_app_id = app_id
@@ -31,7 +35,7 @@ module ApiV1
               MailNotificationHelper.perform_async(:add_new_build, app_id, build.id)
             
               return ApiHelper.response(200) do
-                 { api_version: API_VERSION, response: { build: { id: build.id, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum } } }
+                 { api_version: API_VERSION, response: { build: { id: build.id, name: build.name, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum } } }
               end
             end
           else
@@ -60,7 +64,7 @@ module ApiV1
 
         builds = []
         all_builds.each do |build|
-          builds << { id: build.id, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum }
+          builds << { id: build.id, name: build.name, version: build.version, fixes: build.fixes, created_time: build.created_time, file_name: build.file_name, file_checksum: build.file_checksum }
         end
 
         return ApiHelper.response(200) do
@@ -88,7 +92,7 @@ module ApiV1
         if build.valid?
           build.save
           return ApiHelper.response(200) do
-            { api_version: API_VERSION, response: { build: { id: build.id, version: build.version, fixes: build.fixes } } }
+            { api_version: API_VERSION, response: { build: { id: build.id, name: build.name, version: build.version, fixes: build.fixes } } }
           end
         else
           return ApiHelper.response(500) do

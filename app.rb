@@ -41,14 +41,15 @@ module FlyingApk
                         tls: settings.mail['smtp']['tls'] }
 
       MAIL_SENDER = settings.mail['sender']
-
-      # Include all models, helpers, routes and workers
-      require_relative 'app/helpers/init.rb'
-      require_relative 'app/models/init.rb'
-      require_relative 'app/routes/init.rb'
-      require_relative 'app/workers/init'
     end
 
+    # Include all modules with models, helpers, routes and workers
+    require_relative 'app/helpers/init.rb'
+    require_relative 'app/models/init.rb'
+    require_relative 'app/routes/init.rb'
+    require_relative 'app/workers/init'
+
+    # Include all routes
     use Routes::Users
     use Routes::AndroidApps
     use Routes::Builds
