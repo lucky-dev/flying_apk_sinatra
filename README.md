@@ -152,7 +152,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `POST`
 * Path: `api/builds`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: `version`, `fixes`, `type`, `file`
+* Params: `version`, `fixes`, `type` (must have a value `debug` or `release`), `file`
 * Examples:
     * Request: `curl -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -F "version=1.0" -F "fixes=\"All bugs were fixed\"" -F "file=@/Users/vladimir/Documents/rails_projects/flying_apk/spec/fixture/my_app.apk" http://localhost:8080/api/builds?app_id=2`
     * Response: ```{"api_version":1,"response":{"build":{"id":1,"version":"1.0","fixes":"\"All bugs were fixed\"","created_time":"2014-12-09 11:50:29 +0200","file_name":"f8d3c10a4a63a14175c77a50ad5955b6.apk","file_checksum":"ea6e9d41130509444421709610432ee1"}}}```
@@ -161,7 +161,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `GET`
 * Path: `api/builds`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: `app_id` and/or `type`
+* Params: `app_id` and/or `type` (must have a value `debug` or `release`)
 * Examples:
     * Request: `curl -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" http://localhost:8080/api/builds?app_id=2`
     * Response: ```{"api_version":1,"response":{"builds":[{"id":1,"version":"1.0","fixes":"\"All bugs were fixed\"","created_time":"2014-12-09 11:50:29 +0200","file_name":"f8d3c10a4a63a14175c77a50ad5955b6.apk","file_checksum":"ea6e9d41130509444421709610432ee1"}]}}```
@@ -170,7 +170,7 @@ FlyingApk is a clone of Testflight and only supports sharing of Android applicat
 * Method: `PUT`
 * Path: `api/builds/:id`
 * Header: `Accept: application/vnd.flyingapk; version=1`, `Authorization: e6a21389ac37a3448b35087425736d77`
-* Params: `version` and/or `fixes` and/or `type`
+* Params: `version` and/or `fixes` and/or `type` (must have a value `debug` or `release`)
 * Examples:
     * Request: `curl -X PUT -H "Accept: application/vnd.flyingapk; version=1" -H "Authorization: e6a21389ac37a3448b35087425736d77" -d "fixes=\"New fixes\"" http://localhost:8080/api/builds/1`
     * Response: ```{"api_version":1,"response":{"build":{"id":1,"version":"1.0","fixes":"\"New fixes\""}}}```
